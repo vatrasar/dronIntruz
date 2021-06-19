@@ -1,0 +1,1 @@
+nazwa pliku konfiguracyjnego(wraz z rozszerzeniem)=konf.txt

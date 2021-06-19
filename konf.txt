@@ -1,0 +1,1 @@
+uav_number=2 #mozliwe wartości to 1,2
