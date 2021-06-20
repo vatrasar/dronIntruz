@@ -1,1 +1,6 @@
 uav_number=2 #mozliwe wartości to 1,2
+hands_number=2 #mozliwe wartości to 0,1,2
+visualization=0 #1: jest wizualizacja, 0: brak wizualizacji
+T=50 #wartości powyżej 0
+beat_the_score=50 #wartości powyżej 0
+intruder_max_energy=50 #wartości powyżej 0

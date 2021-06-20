@@ -35,7 +35,41 @@ def check_property(property_name,property_value):
         if(property_value>0 and property_value<=2):
             return property_value
         else:
-            raise Exception("Błąd pliku konfiguracyjnego. Uav_number może być tylko 1 lub 2")
+            raise Exception("Błąd pliku konfiguracyjnego. %s może być tylko 1 lub 2"%(property_name))
+
+    elif (property_name=="hands_number"):
+        property_value = int(str(property_value))
+        if (property_value >= 0 and property_value <= 2):
+            return property_value
+        else:
+            raise Exception("Błąd pliku konfiguracyjnego. %s może być 0,1,2 "%(property_name))
+    elif (property_name=="hands_number"):
+        if (property_value ==1 or property_value == 0):
+            if(property_value==1):
+                return True
+            else:
+                return False
+        else:
+            raise Exception("Błąd pliku konfiguracyjnego. %s może być 0 lub 1"%(property_name))
+    elif (property_name=="T"):
+        if (property_value>0):
+            return float(str(property_value))
+        else:
+            raise Exception("Błąd pliku konfiguracyjnego. %s musi być większa niż 0"%(property_name))
+    elif (property_name=="beat_the_score"):
+        property_value = int(str(property_value))
+        if (property_value>0):
+            return property_value
+        else:
+            raise Exception("Błąd pliku konfiguracyjnego. %s musi być większa niż 0"%(property_name))
+
+    elif (property_name=="intruder_max_energy"):
+        property_value = int(str(property_value))
+        if (property_value>0):
+            return property_value
+        else:
+            raise Exception("Błąd pliku konfiguracyjnego. %s musi być większa niż 0"%(property_name))
+
     else:
         raise Exception("Błąd pliku konfiguracyjnego, nieznana nazwa właściwości:" +property_name)
 
