@@ -70,6 +70,26 @@ def check_property(property_name,property_value):
         else:
             raise Exception("Błąd pliku konfiguracyjnego. %s musi być większa niż 0"%(property_name))
 
+    elif (property_name=="mode"):
+
+        if (property_value=="RW-RA"):
+            return property_value
+        else:
+            raise Exception("Błąd pliku konfiguracyjnego. %s może przyjmować wartości: RW-RA"%(property_name))
+
+    elif (property_name=="prob_of_attack"):
+
+        if (property_value>0 and property_value<1):
+            return float(str(property_value))
+        else:
+            raise Exception("Błąd pliku konfiguracyjnego. %s musi być pomiędzy 0 i 1"%(property_name))
+    elif (property_name=="prob_of_return_to_T2"):
+
+        if (property_value>0 and property_value<1):
+            return float(str(property_value))
+        else:
+            raise Exception("Błąd pliku konfiguracyjnego. %s musi być pomiędzy 0 i 1"%(property_name))
+
     else:
         raise Exception("Błąd pliku konfiguracyjnego, nieznana nazwa właściwości:" +property_name)
 

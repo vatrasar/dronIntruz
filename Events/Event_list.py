@@ -18,6 +18,9 @@ class Event_list:
 
         return minimum_event
 
+    def delete_event(self, event_to_delete):
+        self.event_list.remove(event_to_delete)
+
 
 
 

@@ -1,3 +1,5 @@
+import random
+
 from Events.Event_list import Event_list
 from GameState import GameState
 from Settings import get_properties
@@ -7,6 +9,7 @@ from Visualization import plan_visualize
 
 def main():
     settings_map=None
+    rand=random.Random()
     try:
         settings_map=get_properties()
     except Exception as exp:
@@ -36,8 +39,11 @@ def main():
             break
 
         game_state.update_elements_positions()
+
+        closet_event.handle_event()
         is_collision=game_state.check_collisions()
         game_state.update_points_and_energy()
+
         if(is_collision or game_state.intruder.health<=0):
             statistics.update_stac()
             break
