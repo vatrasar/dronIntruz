@@ -1,10 +1,11 @@
 import random
 
-from Events.Event_list import Event_list
+from events.Event_list import Event_list
 from GameState import GameState
 from Settings import Settings
 from Statistics import Statistics
 from Visualization import plan_visualize
+from events.Move_along import plan_move_along
 
 
 def main():
@@ -21,7 +22,7 @@ def main():
     events_list=Event_list()
     #planning init event for uav
     for uav in game_state.uav_list:
-        uav.plan_move_along(game_state,events_list)
+        plan_move_along(game_state,settings,rand,events_list,uav)
     if settings.is_visualisation:
         plan_visualize(events_list)
 
@@ -40,7 +41,8 @@ def main():
 
         game_state.update_elements_positions()
 
-        closet_event.handle_event()
+        closet_event.handle_event(events_list,game_state,settings,rand)
+
         is_collision=game_state.check_collisions()
         game_state.update_points_and_energy()
 

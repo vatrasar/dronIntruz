@@ -1,10 +1,15 @@
+import sys, os, inspect
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(0, parentdir)
+
 import math
 from random import Random
 
-from GameState import GameState
+
 import numpy as np
 
-from gameObjects.Point import Point
+from GameObjects.Point import Point
 
 
 def get_2d_vector_from_polar(angle,distance):
@@ -51,11 +56,11 @@ def get_vector_angle(vector):
 def dec_to_rad(angle):
 	return (3.14/180)*angle
 
-def get_random_position(rand:Random, gameState:GameState,settings):
+def get_random_position(rand:Random, gameState,settings):
 	intruder_position=gameState.intruder.position
 	polar_angle=rand.random()*360
 	polar_angle=dec_to_rad(polar_angle)
-	x,y=get_2d_vector_from_polar(polar_angle,settings["tier1_distance_from_intruder"])
+	x,y=get_2d_vector_from_polar(polar_angle,settings.tier1_distance_from_intruder)
 	new_position=Point(x,y)
 	return new_position
 

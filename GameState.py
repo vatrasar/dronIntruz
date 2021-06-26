@@ -1,22 +1,24 @@
-from Enum.StatusEnum import UavStatus
-from gameObjects.Hand import Hand
-from gameObjects.Intruder import Intruder
-from gameObjects.UAV import Uav
+
+
+from Enums.StatusEnum import UavStatus
+from GameObjects.Hand import Hand
+from GameObjects.Intruder import Intruder
+from GameObjects import Uav
 
 
 class GameState():
-    def __init__(self,settings_map):
+    def __init__(self, settings):
         self.t_curr=0
         #init UAv
         self.uav_list = []
-        self.intruder=Intruder(0,0,"",40,settings_map["intruder_max_energy"],settings_map)
-        for i in range(0,settings_map["uav_number"]):
-            self.uav_list.append(Uav(0,0,UavStatus.TIER_2,0))
+        self.intruder=Intruder(0, 0,"", 40, settings.intruder_max_energy, settings)
+        for i in range(0, settings.uav_number):
+            self.uav_list.append(Uav(0,0,UavStatus.TIER_2,0,settings.v_of_uav))
 
         #init hands
         self.hands_list = []
-        for i in range(0,settings_map["hands_number"]):
-            self.hands_list.append(Hand(0,0,""))
+        for i in range(0, settings.hands_number):
+            self.hands_list.append(Hand(0,0,"",settings.velocity_hand))
 
 
     #intruz
@@ -33,4 +35,4 @@ class GameState():
         pass
 
     def is_correct(self, position, d_ta_arrive):
-        pass
+        return True

@@ -15,7 +15,10 @@ class Settings():
             return (property_name,property_value)
 
     def check_binary(self,property_value,property_name):
-        if (property_value == 1 or property_value == 0):
+        property_value=str(property_value)
+        property_value=property_value.strip()
+
+        if (property_value == "1" or property_value == "0"):
             if (property_value == 1):
                 return True
             else:
@@ -24,8 +27,11 @@ class Settings():
             raise Exception("Błąd pliku konfiguracyjnego. %s może być 0 lub 1" % (property_name))
 
     def check_float(self,property_value,property_name,min,max,no_max):
+        property_value=float(str(property_value))
+        min=float(str(min))
+        max = float(str(max))
         if(no_max):
-            if (property_value > min and property_value<max):
+            if (property_value > min):
                 return float(str(property_value))
             else:
                 raise Exception("Błąd pliku konfiguracyjnego. %s musi być większe od %f" % (property_name,min))
@@ -91,7 +97,7 @@ class Settings():
             self.intruder_max_energy=self.check_float(property_value,property_name,0,1,True)
 
         elif (property_name=="mode"):
-
+            property_value=property_value.strip()
             if (property_value=="RW-RA"):
                 self.mode=property_value
             else:
@@ -132,6 +138,10 @@ class Settings():
         elif (property_name=="hand_size"):
 
             self.hand_size=self.check_float(property_value,property_name,0,1,True)
+
+        elif (property_name=="velocity_hand"):
+
+            self.velocity_hand=self.check_float(property_value,property_name,0,1,True)
 
         else:
             raise Exception("Błąd pliku konfiguracyjnego, nieznana nazwa właściwości:" +property_name)
