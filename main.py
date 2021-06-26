@@ -21,7 +21,7 @@ def main():
     events_list=Event_list()
     #planning init event for uav
     for uav in game_state.uav_list:
-        uav.plan_move_along(game_state)
+        uav.plan_move_along(game_state,events_list)
     if settings_map["visualization"]:
         plan_visualize(events_list)
 

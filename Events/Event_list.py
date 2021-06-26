@@ -21,6 +21,9 @@ class Event_list:
     def delete_event(self, event_to_delete):
         self.event_list.remove(event_to_delete)
 
+    def append_event(self, new_event):
+        self.event_list.append(new_event)
+
 
 
 
