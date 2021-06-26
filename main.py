@@ -2,27 +2,27 @@ import random
 
 from Events.Event_list import Event_list
 from GameState import GameState
-from Settings import get_properties
+from Settings import Settings
 from Statistics import Statistics
 from Visualization import plan_visualize
 
 
 def main():
-    settings_map=None
+    settings=Settings()
     rand=random.Random()
     try:
-        settings_map=get_properties()
+        settings.get_properties()
     except Exception as exp:
         print(str(exp))
         return
 
-    game_state=GameState(settings_map)
+    game_state=GameState(settings)
     statistics=Statistics()
     events_list=Event_list()
     #planning init event for uav
     for uav in game_state.uav_list:
         uav.plan_move_along(game_state,events_list)
-    if settings_map["visualization"]:
+    if settings.is_visualisation:
         plan_visualize(events_list)
 
     while(True): #main simulation loop
@@ -34,7 +34,7 @@ def main():
 
         game_state.update_time(new_time=closet_event.time_of_event)
         statistics.update_stac()
-        if(game_state.t_curr>settings_map["T"]): #end of loop
+        if(game_state.t_curr>settings.T): #end of loop
             statistics.save()
             break
 

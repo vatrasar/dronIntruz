@@ -15,5 +15,9 @@ class MovableObject():
         time=distance/self.velocity
         return time
 
+    def set_status(self,new_status):
+        self.status=new_status
+
+
 
 

@@ -7,13 +7,16 @@ from GameState import GameState
 from gameObjects.MovableObject import MovableObject
 from tools.geometric_tools import get_random_position, get_alpha_for_distance_on_circle, get_vector_angle, \
     get_2d_vector_from_polar, get_2d_distance
-from tools.velocity_tools import get_time_to_reach_point_in_streinght_line
+from tools.velocity_tools import get_time_to_reach_point_in_streinght_line, get_position_on_circle_base_on_travel_time
 
 
 class Uav(MovableObject):
-    def __init__(self,x,y,status, points):
-        super(Uav, self).__init__(x,y,status,40)
+    def __init__(self,x,y,status, points,velocity):
+        super(Uav, self).__init__(x,y,status,40,velocity)
         self.points=points
+
+
+
 
     def plan_move_along(self,game_state:GameState,settings,rand,event_list:Event_list):
         dt_arrive=0
@@ -22,7 +25,7 @@ class Uav(MovableObject):
         if(self.status==UavStatus.TIER_2):
             if(game_state.t_curr==0): #first enter on tier1
                 d_ta_arrive=1
-                d_ta_arrive = self.get_d_t_arrive_poison(d_ta_arrive, settings)
+                d_ta_arrive = self.get_d_t_arrive_poison(settings)
                 is_new_position_correct=False
                 while(is_new_position_correct):
                     new_position=get_random_position(rand,game_state,settings)
@@ -42,7 +45,7 @@ class Uav(MovableObject):
                 is_new_position_correct = False
                 while(is_new_position_correct):
                     d_ta_arrive =self.get_d_t_arrive_poison(settings)
-                    new_position = self.get_position_on_circle_base_on_travel_time(d_ta_arrive, new_position, settings)
+                    new_position = get_position_on_circle_base_on_travel_time(d_ta_arrive, new_position, settings)
                     is_new_position_correct=game_state.is_correct(new_position,d_ta_arrive)
 
         else:#back to from attack
@@ -55,7 +58,7 @@ class Uav(MovableObject):
                     while(is_new_position_correct):
                         temp_path=self.select_temp_path_back()
                         if(len(temp_path)==0):
-                            self.status=UavStatus.WAIT
+                            self.set_status(UavStatus.WAIT)
                             break
                         time=get_time_to_reach_point_in_streinght_line(self.position,temp_path[len(temp_path)-1],settings)
                         is_new_position_correct=game_state.is_correct(temp_path[len(temp_path)-1],time)
