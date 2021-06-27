@@ -16,3 +16,4 @@ intuder_size=10 #wartośc powyżej 0
 uav_size=2 #wartośc powyżej 0
 hand_size=2 #wartość powyżej 0
 velocity_hand=5 #wartość powyżej 0
+visualzation_update_interval=0.5 #co ile sekund ma być aktualizowana symulacja. Wartość powyżej 0

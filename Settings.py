@@ -142,6 +142,9 @@ class Settings():
         elif (property_name=="velocity_hand"):
 
             self.velocity_hand=self.check_float(property_value,property_name,0,1,True)
+        elif (property_name=="visualzation_update_interval"):
+
+            self.visualzation_update_interval=self.check_float(property_value,property_name,0,1,True)
 
         else:
             raise Exception("Błąd pliku konfiguracyjnego, nieznana nazwa właściwości:" +property_name)

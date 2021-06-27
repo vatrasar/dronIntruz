@@ -4,9 +4,12 @@ from events.Event_list import Event_list
 from GameState import GameState
 from Settings import Settings
 from Statistics import Statistics
-from Visualization import plan_visualize
+
 from events.Move_along import plan_move_along
 import time
+
+from events.visualisation_event import plan_visualize
+
 
 def main():
     settings=Settings()
@@ -24,7 +27,7 @@ def main():
     for uav in game_state.uav_list:
         plan_move_along(game_state,settings,rand,events_list,uav)
     if settings.is_visualisation:
-        plan_visualize(events_list,game_state,settings)
+        plan_visualize(events_list,settings,game_state)
 
     while(True): #main simulation loop
         closet_event=events_list.get_closest_event()
@@ -50,9 +53,6 @@ def main():
             statistics.update_stac()
             break
 
-        if settings.is_visualisation:
-            plan_visualize(events_list, game_state,settings)
-        time.sleep(0.5)
 
 
 
