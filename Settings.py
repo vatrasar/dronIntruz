@@ -19,7 +19,7 @@ class Settings():
         property_value=property_value.strip()
 
         if (property_value == "1" or property_value == "0"):
-            if (property_value == 1):
+            if (property_value == '1'):
                 return True
             else:
                 return False

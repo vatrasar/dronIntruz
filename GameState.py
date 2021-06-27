@@ -11,7 +11,7 @@ class GameState():
         self.t_curr=0
         #init UAv
         self.uav_list = []
-        self.intruder=Intruder(0, 0,"", 40, settings.intruder_max_energy, settings)
+        self.intruder=Intruder("", 40, settings.intruder_max_energy, settings)
         for i in range(0, settings.uav_number):
             self.uav_list.append(Uav(0,0,UavStatus.TIER_2,0,settings.v_of_uav))
 
