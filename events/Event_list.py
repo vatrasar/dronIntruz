@@ -1,4 +1,7 @@
 import sys, os, inspect
+
+from GameObjects import MovableObject
+
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
@@ -26,8 +29,10 @@ class Event_list:
     def delete_event(self, event_to_delete):
         self.event_list.remove(event_to_delete)
 
-    def append_event(self, new_event):
+    def append_event(self, new_event,owner:MovableObject,current_owner_status):
         self.event_list.append(new_event)
+        owner.set_status(current_owner_status)
+        owner.set_next_event(new_event)
 
 
 

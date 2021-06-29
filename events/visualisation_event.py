@@ -1,5 +1,6 @@
 from random import Random
 
+from Enums import UavStatus
 from GameState import GameState
 from events import Event, Event_list
 
@@ -26,27 +27,42 @@ class Visualization_event(Event):
         uav_y = []
         # draw UAVs
         for uav in game_state.uav_list:
-            uav_x.append(uav.position.x)
-            uav_y.append(uav.position.y)
+            if(uav.status!=UavStatus.TIER_2):
+                uav_x.append(uav.position.x)
+                uav_y.append(uav.position.y)
 
-            self.darw_object(game_state, number_of_points, resolution, uav, uav_size, uav_x, uav_y)
+                self.darw_object(game_state, number_of_points, resolution, uav, uav_size, uav_x, uav_y)
 
         # draw intuder
 
-        fig, axs = plt.subplots()
+
+        if (game_state.visualize_first):
+            # game_state.fig, game_state.axs = plt.subplots()
+            # game_state.axs.set_box_aspect(1)
+            plt.ion()
+            game_state.visualize_first = False
+            # plt.draw()
+        # game_state.axs.set_box_aspect(1)
         elements_to_draw.append((uav_x, uav_y))
         for pari_to_draw in elements_to_draw:
             x = pari_to_draw[0]
             y = pari_to_draw[1]
-            axs.scatter(x, y, marker="s", color='r', s=4, )
+            plt.scatter(x, y, marker="s", color='r', s=4, )
 
-        axs.set_box_aspect(1)
+
+
         plt.title("czas: %.2f s"%(game_state.t_curr))
-        plt.axis([-map_range, map_range, -map_range, map_range])
+        plt.axis([-map_range*1.3, map_range*1.3, -map_range, map_range])
 
-        plt.show()
+
+
+        #plt.pause(0.3)
+        plt.draw()
+        plt.pause(0.3)
         plan_visualize(event_list,settings,game_state)
-        time.sleep(0.5)
+        time.sleep(0.3)
+        plt.clf()
+
 
     def darw_object(self,game_state, number_of_points, resolution, object, object_size, object_x, object_y, ):
         for i in range(0, number_of_points):
@@ -76,5 +92,5 @@ class Visualization_event(Event):
 
 
 def plan_visualize(event_list:Event_list,setting:Settings,game_state:GameState):
-    new_event=Visualization_event(game_state.t_curr+setting.visualzation_update_interval,Point(0,0),game_state.intruder)
-    event_list.append_event(new_event)
+    new_event=Visualization_event(game_state.t_curr+setting.visualzation_update_interval,Point(0,0),game_state.intruder,None,game_state.t_curr)
+    event_list.append_event(new_event,game_state.intruder,UavStatus.WAIT)

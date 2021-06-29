@@ -44,7 +44,7 @@ def rotate_vector(vector,angle):
 	return (new_x,new_y)
 
 def get_vector_angle(vector):
-	vector_2=vector
+	vector_2=[vector.x,vector.y]
 	vector_1=[1,0]
 	unit_vector_1 = vector_1 / np.linalg.norm(vector_1)
 	unit_vector_2 = vector_2 / np.linalg.norm(vector_2)
@@ -65,5 +65,17 @@ def get_random_position(rand:Random, gameState,settings):
 	return new_position
 
 
+def get_transform_between_points(source, target):
+	transform = (target.x - source.x, target.y - source.y)
+
+	return transform
 
 
+def get_vector_with_length_and_direction(drone_move_max_speed,direction_vector):
+	sum_of_squares=direction_vector[0]**2+direction_vector[1]**2
+	scale_factor=drone_move_max_speed/math.sqrt(sum_of_squares)
+	result_vector=[direction_vector[0],direction_vector[1]]
+	result_vector[0]=result_vector[0]*scale_factor
+	result_vector[1]=result_vector[1]*scale_factor
+
+	return result_vector

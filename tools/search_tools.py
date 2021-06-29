@@ -1,14 +1,13 @@
 def search_p_a_attack():
-    pass
-
+    return []
 
 def plan_move_attack():
-    pass
+    return []
 
 
 def search_p_a_back() -> list:
-    pass
+    return []
 
 
 def select_temp_path_back() -> list:
-    pass
+    return []

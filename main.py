@@ -1,5 +1,7 @@
 import random
 
+import matplotlib.pyplot as plt
+
 from events.Event_list import Event_list
 from GameState import GameState
 from Settings import Settings
@@ -38,11 +40,12 @@ def main():
 
         game_state.update_time(new_time=closet_event.time_of_event)
         statistics.update_stac()
+        print("check :"+str(game_state.t_curr))
         if(game_state.t_curr>settings.T): #end of loop
             statistics.save()
             break
 
-        game_state.update_elements_positions()
+        game_state.update_elements_positions(settings)
 
         closet_event.handle_event(events_list,game_state,settings,rand)
 
