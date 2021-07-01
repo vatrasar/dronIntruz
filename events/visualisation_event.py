@@ -18,9 +18,10 @@ class Visualization_event(Event):
         event_list.delete_event(self)
         map_range = settings.tier1_distance_from_intruder + settings.tier1_distance_from_intruder * 0.2
 
-        uav_size = 0.5
+        uav_size = settings.uav_size
+        intruder_size = settings.intuder_size
         resolution = 0.1
-        number_of_points = round(uav_size / resolution) + 1
+
 
         elements_to_draw = []
         uav_x = []
@@ -31,10 +32,13 @@ class Visualization_event(Event):
                 uav_x.append(uav.position.x)
                 uav_y.append(uav.position.y)
 
-                self.darw_object(game_state, number_of_points, resolution, uav, uav_size, uav_x, uav_y)
+                self.darw_object(  resolution, uav, uav_size, uav_x, uav_y)
 
         # draw intuder
-
+        intruder_x,intruder_y=[],[]
+        intruder_x.append(game_state.intruder.position.x)
+        intruder_y.append(game_state.intruder.position.y)
+        self.darw_object(  resolution, game_state.intruder,intruder_size , intruder_x,intruder_y)
 
         if (game_state.visualize_first):
             # game_state.fig, game_state.axs = plt.subplots()
@@ -43,11 +47,12 @@ class Visualization_event(Event):
             game_state.visualize_first = False
             # plt.draw()
         # game_state.axs.set_box_aspect(1)
-        elements_to_draw.append((uav_x, uav_y))
-        for pari_to_draw in elements_to_draw:
-            x = pari_to_draw[0]
-            y = pari_to_draw[1]
-            plt.scatter(x, y, marker="s", color='r', s=4, )
+        elements_to_draw.append((uav_x, uav_y,"r"))
+        elements_to_draw.append((intruder_x, intruder_y, "g"))
+        for to_draw in elements_to_draw:
+            x = to_draw[0]
+            y = to_draw[1]
+            plt.scatter(x, y, marker="s", color=to_draw[2], s=4, )
 
 
 
@@ -64,7 +69,9 @@ class Visualization_event(Event):
         plt.clf()
 
 
-    def darw_object(self,game_state, number_of_points, resolution, object, object_size, object_x, object_y, ):
+    def darw_object(self,resolution, object, object_size, object_x, object_y):
+
+        number_of_points = round(object_size/ resolution) + 1
         for i in range(0, number_of_points):
             for p in range(0, number_of_points):
 

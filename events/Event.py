@@ -22,5 +22,6 @@ class Event():
 
     def handle_event(self,event_list:Event_list,game_state:GameState,settings,rand:Random):
         event_list.delete_event(self)
+        self.event_owner.next_event=None
         self.event_owner.set_status(self.next_status)
 

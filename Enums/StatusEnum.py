@@ -13,3 +13,8 @@ class HandStatus(Enum):
     TIER_0=1
     DEFENCE=0
     BACK=2
+
+
+class Sides(Enum):
+    RIGHT=0
+    LEFT=1

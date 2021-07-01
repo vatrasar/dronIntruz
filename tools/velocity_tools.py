@@ -20,9 +20,9 @@ def get_position_on_circle_base_on_travel_time(uav, delta_time, settings):
     new_position=Point(new_position[0],new_position[1])
     return new_position
 
-def get_time_to_reach_point_in_streinght_line(position, target,settings):
+def get_time_to_reach_point_in_streinght_line(position, target,velocity):
     distance=float(get_2d_distance(position,target))
-    time=distance/settings.v_of_uav
+    time=distance/velocity
     return time
 
 # def get_get_position_base_on_travel_time(uav_position,target_position, delta_time, settings):

@@ -18,7 +18,7 @@ def get_2d_vector_from_polar(angle,distance):
 	return (x,y)
 
 def get_alpha_for_distance_on_circle(r,distance):
-	alpha=360.0*distance/(2*3.14*r)
+	alpha=2*3.14*distance/(2*3.14*r)
 	return alpha
 
 
