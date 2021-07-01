@@ -146,6 +146,10 @@ class Settings():
 
             self.visualzation_update_interval=self.check_float(property_value,property_name,0,1,True)
 
+        elif (property_name=="r_of_LR"):
+
+            self.r_of_LR=self.check_float(property_value,property_name,0,1,True)
+
         else:
             raise Exception("Błąd pliku konfiguracyjnego, nieznana nazwa właściwości:" +property_name)
 

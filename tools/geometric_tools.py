@@ -15,6 +15,7 @@ from GameObjects.Point import Point
 def get_2d_vector_from_polar(angle,distance):
 	x=distance*np.cos(angle)
 	y=distance*np.sin(angle)
+
 	return (x,y)
 
 def get_alpha_for_distance_on_circle(r,distance):
