@@ -1,5 +1,6 @@
 import sys, os, inspect
 
+from events.Move_r import plan_move_r
 from tools.geometric_tools import get_2d_distance, get_random_position
 from tools.search_tools import select_temp_path_back, search_p_a_back, plan_move_attack, search_p_a_attack
 from tools.velocity_tools import get_position_on_circle_base_on_travel_time, get_time_to_reach_point_in_streinght_line, \
@@ -30,6 +31,8 @@ class Move_along(Event):
         super().handle_event(event_list,game_state,settings,rand)
         uav:Uav=self.event_owner
         uav.position=self.target_position
+        for hand in game_state.hands_list:
+            plan_move_r(event_list,hand,game_state,settings)
         if(uav.status==UavStatus.TIER_2):
             plan_move_along(game_state,settings,rand,event_list,uav)
             return
@@ -123,10 +126,12 @@ def plan_move_along(game_state,settings,rand,event_list:Event_list,uav:Uav):
                         uav.set_status(UavStatus.WAIT)
                         break
                     time=get_time_to_reach_point_in_streinght_line(uav.position,temp_path[len(temp_path)-1],settings)
+                    time=time+game_state.t_curr
                     is_new_position_correct=game_state.is_correct(temp_path[len(temp_path)-1],time)
             else:
                 time = get_time_to_reach_point_in_streinght_line(uav.position, path[len(path) - 1],
-                                                                 settings)
+                                                            settings)
+                time = time + game_state.t_curr
                 is_new_position_correct=game_state.is_correct(path[len(path)-1],time)
 
 
@@ -137,7 +142,7 @@ def plan_move_along(game_state,settings,rand,event_list:Event_list,uav:Uav):
             next_status=UavStatus.TIER_1
             if(len(path)>1):
                 next_status=UavStatus.ON_WAY
-            new_event=Move_along(event_time,path[0],uav,next_status)
+            new_event=Move_along(event_time,path[0],uav,next_status,game_state.t_curr)
             event_list.append_event(new_event,uav,UavStatus.ON_WAY)
         elif(0<uav_distance_to_intruder<settings.tier1_distance_from_intruder and len(path)==0 and len(temp_path)==0):
             dt_arrive = get_time_to_reach_point_in_streinght_line(uav.position, temp_path[0], settings)
@@ -145,7 +150,7 @@ def plan_move_along(game_state,settings,rand,event_list:Event_list,uav:Uav):
             next_status = UavStatus.TIER_1
             if (len(path) > 1):
                 next_status = UavStatus.ON_WAY
-            new_event = Move_along(event_time, temp_path[0], uav,next_status)
+            new_event = Move_along(event_time, temp_path[0], uav,next_status,game_state.t_curr)
             event_list.append_event(new_event,uav,UavStatus.ON_WAY)
         elif(0<uav_distance_to_intruder<settings.tier1_distance_from_intruder and uav.status==UavStatus.WAIT):
             dt_arrive =settings.wiat_time
@@ -153,7 +158,7 @@ def plan_move_along(game_state,settings,rand,event_list:Event_list,uav:Uav):
             next_status = UavStatus.TIER_1
             if (len(path) > 1):
                 next_status = UavStatus.ON_WAY
-            new_event = Move_along(event_time, uav.position, uav,next_status)
+            new_event = Move_along(event_time, uav.position, uav,next_status,game_state.t_curr)
             uav.plan_help()
             event_list.append_event(new_event,uav,UavStatus.ON_WAY)
 

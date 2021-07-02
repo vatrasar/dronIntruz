@@ -1,6 +1,6 @@
 from random import Random
 
-from Enums import UavStatus
+from Enums import UavStatus, HandStatus
 from GameState import GameState
 from events import Event, Event_list
 
@@ -31,14 +31,26 @@ class Visualization_event(Event):
             if(uav.status!=UavStatus.TIER_2):
                 uav_x.append(uav.position.x)
                 uav_y.append(uav.position.y)
-
                 self.darw_object(  resolution, uav, uav_size, uav_x, uav_y)
+        elements_to_draw.append((uav_x, uav_y, "r"))
+
 
         # draw intuder
         intruder_x,intruder_y=[],[]
         intruder_x.append(game_state.intruder.position.x)
         intruder_y.append(game_state.intruder.position.y)
         self.darw_object(  resolution, game_state.intruder,intruder_size , intruder_x,intruder_y)
+        elements_to_draw.append((intruder_x, intruder_y, "g"))
+
+
+        #draw hands
+        hands_x,hands_y=[],[]
+        for hand in game_state.hands_list:
+            if hand.status!=HandStatus.TIER_0:
+                hands_x.append(hand.position.x)
+                hands_y.append(hand.position.y)
+                self.darw_object(resolution, hand,settings.hand_size , hands_x,hands_y)
+        elements_to_draw.append((hands_x, hands_y, "b"))
 
         if (game_state.visualize_first):
             # game_state.fig, game_state.axs = plt.subplots()
@@ -47,8 +59,8 @@ class Visualization_event(Event):
             game_state.visualize_first = False
             # plt.draw()
         # game_state.axs.set_box_aspect(1)
-        elements_to_draw.append((uav_x, uav_y,"r"))
-        elements_to_draw.append((intruder_x, intruder_y, "g"))
+
+
         for to_draw in elements_to_draw:
             x = to_draw[0]
             y = to_draw[1]

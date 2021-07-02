@@ -1,6 +1,6 @@
 
 
-from Enums.StatusEnum import UavStatus
+from Enums.StatusEnum import UavStatus, HandStatus, Sides
 from GameObjects.Hand import Hand
 from GameObjects.Intruder import Intruder
 from GameObjects import Uav
@@ -19,8 +19,13 @@ class GameState():
 
         #init hands
         self.hands_list = []
-        for i in range(0, settings.hands_number):
-            self.hands_list.append(Hand(0,0,"",settings.velocity_hand))
+        if(settings.hands_number==1):
+            self.hands_list.append(Hand(0,0,"",settings.velocity_hand,Sides.RIGHT,settings))
+        elif(settings.hands_number==2):
+            self.hands_list.append(Hand(0, 0, "", settings.velocity_hand, Sides.RIGHT,settings))
+            self.hands_list.append(Hand(0, 0, "", settings.velocity_hand, Sides.LEFT,settings))
+
+
 
 
     #intruz

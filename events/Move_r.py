@@ -39,14 +39,17 @@ def send_hand_to_drone(drones, hand,game_state:GameState,settings,event_list:Eve
     else:
         distance=get_2d_distance(closest_drone.position,hand.position)
 
+    hand.set_chasing_drone(closest_drone)
     angle=get_vector_angle(closest_drone.position)
     vector=get_2d_vector_from_polar(angle,distance)
-    tier0_pose=get_hand_tier0_position(hand,settings)
+    tier0_pose=hand.get_hand_tier0_position(settings)
     result_postion=Point(vector[0]+tier0_pose[0],vector[1]+tier0_pose[1])
     dt_arrive=get_time_to_reach_point_in_streinght_line(hand.position,result_postion,settings.velocity_hand)
     dt_arrive=game_state.t_curr+dt_arrive
     new_event=Move_r(dt_arrive,result_postion,hand,HandStatus.DEFENCE,game_state.t_curr)
-    event_list.append_event(new_event,hand,HandStatus.DEFENCE)
+    if(dt_arrive-game_state.t_curr>=settings.minimal_hand_move_time):
+        event_list.append_event(new_event,hand,HandStatus.DEFENCE)
+
 
 
 
@@ -100,19 +103,13 @@ def plan_move_r(event_list:Event_list, owner:Hand,game_state:GameState,settings:
     else:
         if(owner.status!=HandStatus.TIER_0):
             target=None
-            target = get_hand_tier0_position(owner, settings)
+            target = owner.get_hand_tier0_position( settings)
             time_of_event=get_time_to_reach_point_in_streinght_line(owner.position,target,settings.velocity_hand)
             new_event=Move_r(time_of_event,target,owner,HandStatus.TIER_0,game_state.t_curr)
             event_list.append_event(new_event,owner,HandStatus.BACK)
 
 
-def get_hand_tier0_position(owner, settings):
-    target=None
-    if (owner.side == Sides.RIGHT):
-        target = get_2d_vector_from_polar(3.14 / 2, settings.intuder_size + settings.hand_size)
-    else:
-        target = get_2d_vector_from_polar(3.14 * 3 / 2, settings.intuder_size + settings.hand_size)
-    return target
+
 
 
 class Move_r(Event):

@@ -150,6 +150,10 @@ class Settings():
 
             self.r_of_LR=self.check_float(property_value,property_name,0,1,True)
 
+        elif (property_name=="minimal_hand_move_time"):
+
+            self.minimal_hand_move_time=self.check_float(property_value,property_name,0,1,True)
+
         else:
             raise Exception("Błąd pliku konfiguracyjnego, nieznana nazwa właściwości:" +property_name)
 
