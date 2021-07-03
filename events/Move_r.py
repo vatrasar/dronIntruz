@@ -54,6 +54,7 @@ def send_hand_to_drone(drones, hand,game_state:GameState,settings,event_list:Eve
     angle=get_vector_angle(closest_drone.position)
     positon_result=get_2d_vector_from_polar(angle,distance)
     positon_result=Point(positon_result[0],positon_result[1])
+    print("real distance to tier0 %f"%(get_2d_distance(tier0_pose,positon_result)))
     dt_arrive=get_time_to_reach_point_in_streinght_line(hand.position,positon_result,settings.velocity_hand)
     dt_arrive=game_state.t_curr+dt_arrive
     new_event=Move_r(dt_arrive,positon_result,hand,HandStatus.DEFENCE,game_state.t_curr)
@@ -68,12 +69,13 @@ def get_distance_from_hand_to_intruder(closest_drone, distance_to_tier0, tier0_p
     if (angle > 3.14):
         angle = 2 * 3.14 - angle
 
+
     distanec_tier0_intruder=get_2d_distance(game_state.intruder.position,tier0_pose)
     sinB=(distanec_tier0_intruder/distance_to_tier0)*math.sin(angle)
     Bdegrees=math.degrees(math.asin(sinB))
 
     lambda_degrees=180-math.degrees(angle)-Bdegrees
-    distace=(math.sin(math.radians(lambda_degrees))/math.sin(angle))*distanec_tier0_intruder
+    distace=(math.sin(math.radians(lambda_degrees))/math.sin(angle))*distance_to_tier0
 
     return distace
 

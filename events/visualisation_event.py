@@ -1,3 +1,4 @@
+import math
 from random import Random
 
 from Enums import UavStatus, HandStatus
@@ -11,7 +12,8 @@ from events import Event_list
 import matplotlib.pyplot as plt
 import numpy as np
 import time
-from tools.geometric_tools import get_2d_distance
+from tools.geometric_tools import get_2d_distance, get_2d_vector_from_polar
+
 
 class Visualization_event(Event):
     def handle_event(self,event_list:Event_list,game_state:GameState,settings,rand:Random):
@@ -51,6 +53,41 @@ class Visualization_event(Event):
                 hands_y.append(hand.position.y)
                 self.darw_object(resolution, hand,settings.hand_size , hands_x,hands_y)
         elements_to_draw.append((hands_x, hands_y, "b"))
+
+
+
+        #draw hands ranges
+        for hand in game_state.hands_list:
+            tier_0_positon=hand.get_hand_tier0_position(settings)
+            step=1
+            point_x,point_y=[],[]
+            for i in range(0,360):
+                angle=math.radians(i*step)
+                pose_point=get_2d_vector_from_polar(angle, settings.r_of_LR)
+                pose_point[0]=pose_point[0]+tier_0_positon.x
+                pose_point[1]=pose_point[1]+tier_0_positon.y
+
+                point_x.append(pose_point[0])
+                point_y.append(pose_point[1])
+            elements_to_draw.append((point_x, point_y, "m"))
+
+
+        #draw tier1 range
+
+        tier_1_positon=game_state.intruder.position
+        step=1
+        point_x,point_y=[],[]
+        for i in range(0,360):
+            angle=math.radians(i*step)
+            pose_point=get_2d_vector_from_polar(angle, settings.tier1_distance_from_intruder)
+            pose_point[0]=pose_point[0]
+            pose_point[1]=pose_point[1]
+
+            point_x.append(pose_point[0])
+            point_y.append(pose_point[1])
+        elements_to_draw.append((point_x, point_y, "y"))
+
+
 
         if (game_state.visualize_first):
             # game_state.fig, game_state.axs = plt.subplots()
