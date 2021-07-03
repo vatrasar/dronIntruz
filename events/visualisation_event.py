@@ -77,7 +77,7 @@ class Visualization_event(Event):
         plt.draw()
         plt.pause(0.3)
         plan_visualize(event_list,settings,game_state)
-        time.sleep(0.3)
+        # time.sleep(0.3)
         plt.clf()
 
 

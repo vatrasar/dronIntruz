@@ -1,8 +1,9 @@
 from Enums.StatusEnum import Sides
+from GameObjects import Point
 from GameObjects.MovableObject import MovableObject
 from Settings import Settings
 from tools.geometric_tools import get_2d_vector_from_polar
-
+from GameObjects.Point import Point
 
 class Hand(MovableObject):
     def __init__(self,x,y,status,velocity_hand,side:Sides,settings:Settings):
@@ -11,8 +12,8 @@ class Hand(MovableObject):
         self.chasing_drone=None
 
         tier_0_positon=self.get_hand_tier0_position(settings)
-        self.position.x=tier_0_positon[0]
-        self.position.y=tier_0_positon[1]
+        self.position.x=tier_0_positon.x
+        self.position.y=tier_0_positon.y
     def move_hand(self):
         pass
 
@@ -25,4 +26,5 @@ class Hand(MovableObject):
             target = get_2d_vector_from_polar(3.14 / 2, settings.intuder_size + settings.hand_size)
         else:
             target = get_2d_vector_from_polar(3.14 * 3 / 2, settings.intuder_size + settings.hand_size)
-        return target
+
+        return Point(target[0],target[1])

@@ -22,6 +22,16 @@ def get_alpha_for_distance_on_circle(r,distance):
 	alpha=2*3.14*distance/(2*3.14*r)
 	return alpha
 
+def convert_to_360(angle):
+	if(angle<0):
+		angle=2*3.14+angle
+	return angle
+
+def get_postion_when_origin_is_central_point(orginal_position:Point,new_central:Point):
+	new_point=Point(orginal_position.x-new_central.x,orginal_position.y-new_central.y)
+	return new_point
+
+
 
 def get_2d_distance(source, position):
 	x_target=position.x
