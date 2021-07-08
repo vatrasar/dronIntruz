@@ -54,7 +54,7 @@ def send_hand_to_drone(drones, hand,game_state:GameState,settings,event_list:Eve
     angle=get_vector_angle(closest_drone.position)
     positon_result=get_2d_vector_from_polar(angle,distance)
     positon_result=Point(positon_result[0],positon_result[1])
-    print("real distance to tier0 %f"%(get_2d_distance(tier0_pose,positon_result)))
+
     dt_arrive=get_time_to_reach_point_in_streinght_line(hand.position,positon_result,settings.velocity_hand)
     dt_arrive=game_state.t_curr+dt_arrive
     new_event=Move_r(dt_arrive,positon_result,hand,HandStatus.DEFENCE,game_state.t_curr)

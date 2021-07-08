@@ -154,6 +154,14 @@ class Settings():
 
             self.minimal_hand_move_time=self.check_float(property_value,property_name,0,1,True)
 
+        elif (property_name=="map_resolution"):
+
+            self.map_resolution=self.check_float(property_value,property_name,0,1,True)
+
+        elif (property_name=="search_angle"):
+
+            self.search_angle=self.check_float(property_value,property_name,20,360,False)
+
         else:
             raise Exception("Błąd pliku konfiguracyjnego, nieznana nazwa właściwości:" +property_name)
 

@@ -38,8 +38,11 @@ class MovableObject():
         self.next_event=next_event
 
     def update_position(self, t_curr,settings):
-
-        delta_time=t_curr-self.next_event.last_postion_update_time
+        delta_time=None
+        try:
+            delta_time=t_curr-self.next_event.last_postion_update_time
+        except Exception:
+            print("lokl")
         new_postion=None
         if(self.next_event.next_status==UavStatus.TIER_1 and self.status==UavStatus.TIER_1): #move on circle
 

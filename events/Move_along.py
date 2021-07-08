@@ -1,8 +1,9 @@
 import sys, os, inspect
 
+from events.Move_attack import plan_move_attakc
 from events.Move_r import plan_move_r
 from tools.geometric_tools import get_2d_distance, get_random_position
-from tools.search_tools import select_temp_path_back, search_p_a_back, plan_move_attack, search_p_a_attack
+from tools.search_tools import select_temp_path_back, search_p_a_back, search_p_a_attack
 from tools.velocity_tools import get_position_on_circle_base_on_travel_time, get_time_to_reach_point_in_streinght_line, \
     get_d_t_arrive_poison
 
@@ -41,17 +42,21 @@ class Move_along(Event):
             for hand in game_state.hands_list:
                 hand.move_hand()
 
-            path=search_p_a_attack()
-            if(len(path)!=0):
+            path=search_p_a_attack(game_state,settings,uav)
+            if(len(path)>1):
+
                 if(settings.mode=="RW-RA"):
                     x=rand.random()
                     if(x<settings.prob_of_attack):
-                        plan_move_attack()
+                        plan_move_attakc(game_state,settings,event_list,uav,path)
+                        print("attack:")
                     else:
                         x=rand.random()
                         if(x<settings.prob_of_return_to_T2):
                             uav.set_status(UavStatus.TIER_2)
                             plan_move_along(game_state,settings,rand,event_list,uav)#return 2t->1T
+                        elif uav.status==UavStatus.ON_ATTACK:
+                            plan_move_along(game_state, settings, rand, event_list, uav)
 
                         else:#move on tier1
                             plan_move_along(game_state,settings,rand,event_list,uav)
@@ -118,7 +123,7 @@ def plan_move_along(game_state,settings,rand,event_list:Event_list,uav:Uav):
         temp_path = None
         while(not(is_new_position_correct)):
             path:list=search_p_a_back()
-            if(len(path)==0):#no rescue path
+            if(len(path)<=1):#no rescue path
                 is_new_position_correct = False
                 while(not(is_new_position_correct)):
                     temp_path=select_temp_path_back()

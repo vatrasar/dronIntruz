@@ -5,4 +5,4 @@ import numpy as np
 from matplotlib.figure import Figure
 import math
 
-print(math.degrees(math.asin(0.5)))
+print(370.5%360)

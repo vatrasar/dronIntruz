@@ -22,10 +22,32 @@ def get_alpha_for_distance_on_circle(r,distance):
 	alpha=2*3.14*distance/(2*3.14*r)
 	return alpha
 
+
+def angle_positive(angle):
+	if(angle<0):
+		angle=angle%360
+		angle=360-angle
+	return angle
+
+def is_angle_in_range(angle,ang_min,ang_max):
+	if(ang_min>ang_max):
+		if(angle<ang_min and angle>ang_max):
+			return False
+		else:
+			return True
+	else:
+		if(angle> ang_max or angle<ang_min):
+			return False
+		else:
+			return True
+
+
 def convert_to_360(angle):
 	if(angle<0):
 		angle=2*3.14+angle
 	return angle
+
+
 
 def get_postion_when_origin_is_central_point(orginal_position:Point,new_central:Point):
 	new_point=Point(orginal_position.x-new_central.x,orginal_position.y-new_central.y)
@@ -81,7 +103,10 @@ def get_transform_between_points(source, target):
 
 	return transform
 
+def move_point_with_vector(point, vector):
+	new_point=Point(point.x+vector[0],point.y+vector[1])
 
+	return new_point
 def get_vector_with_length_and_direction(drone_move_max_speed,direction_vector):
 	sum_of_squares=direction_vector[0]**2+direction_vector[1]**2
 	scale_factor=drone_move_max_speed/math.sqrt(sum_of_squares)
