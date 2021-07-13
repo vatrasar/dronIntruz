@@ -1,11 +1,16 @@
+from GameObjects import Point
+
+
 class FluidCell():
-    def __init__(self,arrive_time,position):
+    def __init__(self,arrive_time,position,i_x,i_y):
         self.parrent:FluidCell=None
         self.uav_arrive_time=arrive_time
         self.points=-1
         self.is_safe=False
         self.position=position
         self.is_visited=False
+        self.index=Point(i_x,i_y)
+        self.is_queue=False
 
     def set_parrent(self, cell):
         self.parrent=cell

@@ -1,6 +1,9 @@
 import sys, os, inspect
+import typing
 
-from events.Move_attack import plan_move_attakc
+from GameState import GameState
+from Map.FluidCel import FluidCell
+
 from events.Move_r import plan_move_r
 from tools.geometric_tools import get_2d_distance, get_random_position
 from tools.search_tools import select_temp_path_back, search_p_a_back, search_p_a_attack
@@ -46,7 +49,12 @@ class Move_along(Event):
             if(len(path)>1):
 
                 if(settings.mode=="RW-RA"):
-                    x=rand.random()
+                    x=1
+                    if self.event_owner.status==UavStatus.ON_ATTACK:
+                        x=0
+                    else:
+                        x=rand.random()
+
                     if(x<settings.prob_of_attack):
                         plan_move_attakc(game_state,settings,event_list,uav,path)
                         print("attack:")
@@ -174,4 +182,10 @@ def plan_move_along(game_state,settings,rand,event_list:Event_list,uav:Uav):
 
 
 
+def plan_move_attakc(game_state:GameState,settings,event_list:Event_list,uav:Uav,path:typing.List[FluidCell]):
+    target_position=path[1].position
+    dt_arrive=get_time_to_reach_point_in_streinght_line(target_position,uav.position,settings.v_of_uav)
+    event_time=dt_arrive+game_state.t_curr
+    new_event=Move_along(event_time,target_position,uav,UavStatus.ON_ATTACK,game_state.t_curr)
+    event_list.append_event(new_event,uav,UavStatus.ON_ATTACK)
 

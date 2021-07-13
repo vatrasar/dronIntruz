@@ -44,6 +44,11 @@ class MovableObject():
         except Exception:
             print("lokl")
         new_postion=None
+
+        if delta_time==0.0:
+            return
+
+
         if(self.next_event.next_status==UavStatus.TIER_1 and self.status==UavStatus.TIER_1): #move on circle
 
 
@@ -54,7 +59,7 @@ class MovableObject():
         else:
             transofrm_between_points=get_transform_between_points(self.position,self.next_event.target_position)
             velocity_vector=get_vector_with_length_and_direction(settings.v_of_uav,transofrm_between_points)
-            move_vector=get_move_point(velocity_vector,delta_time)
+            move_vector=get_move_point(velocity_vector,delta_time,self.position)
             new_position=move_vector
 
 

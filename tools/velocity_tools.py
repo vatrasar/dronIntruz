@@ -45,8 +45,8 @@ def get_d_t_arrive_poison(settings):
     return d_ta_arrive
 
 
-def get_move_point(velocity_vector, delta_time):
-    result_pozition=Point(1,1)
-    result_pozition.x=velocity_vector[0]*delta_time
-    result_pozition.y=velocity_vector[1]*delta_time
+def get_move_point(velocity_vector, delta_time,point):
+    result_pozition=point
+    result_pozition.x= result_pozition.x+velocity_vector[0]*delta_time
+    result_pozition.y=result_pozition.y+velocity_vector[1]*delta_time
     return result_pozition

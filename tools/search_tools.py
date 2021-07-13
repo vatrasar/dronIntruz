@@ -40,6 +40,7 @@ def search_p_a_attack(game_state:GameState,settings,uav:Uav):
         if best_cell.points==-1:
             return []
         path=create_path(best_cell)
+        game_map.show_path(path)
         return path
     else:#no path to target
         return []
@@ -52,30 +53,31 @@ def floading_algo(game_map, game_state, settings, uav):
 
 
     floadin_queue = []
-    cell = game_map.get_floading_point(uav.position)
-    cell.uav_arrive_time = 0
-    floadin_queue.append(cell)
+    old_cell = game_map.get_floading_point(uav.position)
+    old_cell.uav_arrive_time = 0
+    floadin_queue.append(old_cell)
 
-
-
+    first_cell = old_cell
     # fluid marks
     while (len(floadin_queue) > 0):
-        cell = floadin_queue[0]
-        floadin_queue.remove(cell)
 
-        neighbours_list: typing.List[FluidCell] = game_map.get_avaiable_neighbours(cell,
-                                                                                   settings.tier1_distance_from_intruder,
-                                                                                   uav)
-        avaiable_neighbours = []
+        old_cell = floadin_queue[0]
+        floadin_queue.remove(old_cell)
+        old_cell.is_queue=False
+
+        neighbours_list: typing.List[FluidCell] = game_map.get_avaiable_neighbours(old_cell,uav,game_state,settings,first_cell)
+
+        parents_list=[]
         # check naighbours. set parent and arrive time
         for neighbour in neighbours_list:
+            is_parrent=True
             neighbour.set_visited(True)
             new_parrent = None
-            if neighbour.parrent == None:
-                new_parrent = cell
-            elif neighbour.parrent.uav_arrive_time >= cell.uav_arrive_time or neighbour.parrent.uav_arrive_time == -1:
-                new_parrent = cell
+            if neighbour.parrent == None or neighbour.parrent.uav_arrive_time >= old_cell.uav_arrive_time or neighbour.parrent.uav_arrive_time == -1:
+                new_parrent = old_cell
+
             else:
+                is_parrent=False
                 new_parrent = neighbour.parrent
             distance = get_2d_distance(neighbour.position, new_parrent.position)
             arrive_time = new_parrent.uav_arrive_time + distance / settings.v_of_uav
@@ -89,12 +91,16 @@ def floading_algo(game_map, game_state, settings, uav):
                     is_point_avaiable = False
                     break
 
-            if is_point_avaiable:
-                avaiable_neighbours.append(neighbour)
+            if is_point_avaiable and is_parrent and neighbour.is_queue==False:
+                if neighbour.points==0:
+                    parents_list.append(neighbour)
                 neighbour.set_uav_arrive_time(arrive_time)
-                neighbour.set_parrent(cell)
+                neighbour.set_parrent(new_parrent)
+                neighbour.is_queue=True
 
-        floadin_queue.extend(neighbours_list)
+
+
+        floadin_queue.extend(parents_list)
 
 
 

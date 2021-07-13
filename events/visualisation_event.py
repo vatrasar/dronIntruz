@@ -25,7 +25,18 @@ class Visualization_event(Event):
         resolution = 0.1
 
 
+
+
         elements_to_draw = []
+
+        # draw intuder
+        intruder_x,intruder_y=[],[]
+        intruder_x.append(game_state.intruder.position.x)
+        intruder_y.append(game_state.intruder.position.y)
+        self.darw_object(  resolution, game_state.intruder,intruder_size , intruder_x,intruder_y)
+        elements_to_draw.append((intruder_x, intruder_y, "g"))
+
+
         uav_x = []
         uav_y = []
         # draw UAVs
@@ -37,12 +48,7 @@ class Visualization_event(Event):
         elements_to_draw.append((uav_x, uav_y, "r"))
 
 
-        # draw intuder
-        intruder_x,intruder_y=[],[]
-        intruder_x.append(game_state.intruder.position.x)
-        intruder_y.append(game_state.intruder.position.y)
-        self.darw_object(  resolution, game_state.intruder,intruder_size , intruder_x,intruder_y)
-        elements_to_draw.append((intruder_x, intruder_y, "g"))
+
 
 
         #draw hands
@@ -112,7 +118,7 @@ class Visualization_event(Event):
 
         #plt.pause(0.3)
         plt.draw()
-        plt.pause(0.3)
+        plt.pause(0.01)
         plan_visualize(event_list,settings,game_state)
         # time.sleep(0.3)
         plt.clf()
