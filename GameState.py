@@ -36,6 +36,10 @@ class GameState():
         for uav in self.uav_list:
             uav.update_position(self.t_curr, settings)
 
+        for hand in self.hands_list:
+            if hand.next_event!=None:
+                hand.update_position(self.t_curr, settings)
+
     def check_collisions(self):
         pass
 
