@@ -72,7 +72,11 @@ def get_distance_from_hand_to_intruder(closest_drone, distance_to_tier0, tier0_p
 
     distanec_tier0_intruder=get_2d_distance(game_state.intruder.position,tier0_pose)
     sinB=(distanec_tier0_intruder/distance_to_tier0)*math.sin(angle)
-    Bdegrees=math.degrees(math.asin(sinB))
+    Bdegrees=None
+    try:
+        Bdegrees=math.degrees(math.asin(sinB))
+    except Exception:
+        print("lol")
 
     lambda_degrees=180-math.degrees(angle)-Bdegrees
     distace=(math.sin(math.radians(lambda_degrees))/math.sin(angle))*distance_to_tier0

@@ -152,6 +152,9 @@ class Settings():
         elif (property_name=="r_of_LR"):
 
             self.r_of_LR=self.check_float(property_value,property_name,0,1,True)
+            if self.r_of_LR<self.intuder_size+self.uav_size:
+                raise Exception("r_of_LR musi być większe niż intuder_size i uav_size")
+
 
         elif (property_name=="minimal_hand_move_time"):
 
