@@ -2,6 +2,8 @@
 
 class Settings():
 
+
+
     def get_property_pair(self,property_line:str):
 
             index_of_equal =property_line.index("=")
@@ -65,6 +67,7 @@ class Settings():
             if(len(record)!=0):
                 property_name,property_value=self.get_property_pair(record)
                 self.check_property(property_name,property_value)
+        self.back_distance = 2 * self.intuder_size
 
 
 
@@ -164,6 +167,7 @@ class Settings():
 
         else:
             raise Exception("Błąd pliku konfiguracyjnego, nieznana nazwa właściwości:" +property_name)
+
 
 
 

@@ -25,6 +25,24 @@ def check_is_in_dron_search_range(cell_postion, drone_position, intruder_positio
     # print(("current %.2f radians %.2f point %.2f %.2f")%(point_angle,orginal_angle,temp_point.x,temp_point.y))
     return is_angle_in_range(point_angle,anlge_min,anlge_max)
 
+
+
+def check_is_in_dron_search_range_back(cell_postion, drone_position, intruder_position,search_angle):
+    transform_vecrot_to_intruder=get_transform_between_points(drone_position,intruder_position)
+    temp_point=move_point_with_vector(cell_postion,transform_vecrot_to_intruder)
+    intruder_tmep_point=move_point_with_vector(intruder_position,transform_vecrot_to_intruder)
+
+    point_for_center_angle=Point(-intruder_tmep_point.x,-intruder_tmep_point.y)
+    angle=math.degrees(convert_to_360(get_vector_angle(point_for_center_angle)))
+    anlge_max=angle_positive((angle+search_angle/2.0)%360)
+    anlge_min=angle_positive((angle-search_angle/2.0)%360)
+    orginal_angle=convert_to_360(get_vector_angle(temp_point))
+
+    point_angle=math.degrees(convert_to_360(get_vector_angle(temp_point)))
+
+    # print(("current %.2f radians %.2f point %.2f %.2f")%(point_angle,orginal_angle,temp_point.x,temp_point.y))
+    return is_angle_in_range(point_angle,anlge_min,anlge_max)
+
 class GameMap():
     def __init__(self,settings):
         map_size=settings.tier1_distance_from_intruder*1.3
@@ -184,7 +202,7 @@ class GameMap():
         angle = math.degrees(convert_to_360(angle))
         for arange in self.poin_ranges:
             if arange[0] <= angle and arange[1] > angle and get_2d_distance(cell.position,
-                                                                            game_state.intruder.position) < settings.intuder_size + settings.uav_size:
+                                                                            game_state.intruder.position) < settings.intuder_size*1.3 + settings.uav_size:
                 return arange[2]
         return 0
 
@@ -213,6 +231,17 @@ class GameMap():
 
         return best_cell_in_range
 
+    def get_best_points_in_range_back(self):
+        best_cell_in_range=self.fluid_map[0][0]
+
+        for row in self.fluid_map:
+            for cell in row:
+                if cell.points==1:
+                    return cell
+
+
+        return None
+
     def get_cell_with_index(self, cell_index)->FluidCell:
         return self.fluid_map[cell_index.y][cell_index.x]
 
@@ -222,6 +251,50 @@ class GameMap():
         for element in path:
             self.fluid_memory[element.index.y][element.index.x]=i
             i=i+1
+
+    def get_back_avaiable_neighbours(self, parrent_cell:FluidCell,uav,game_state:GameState,settings:Settings,first_cell):
+
+        x=parrent_cell.index.x
+        y=parrent_cell.index.y
+        potential_neighbours_index_list=[]
+        potential_neighbours_index_list.append(Point(x+1,y))
+        potential_neighbours_index_list.append(Point(x-1,y))
+        potential_neighbours_index_list.append(Point(x+1,y+1))
+        potential_neighbours_index_list.append(Point(x,y+1))
+        potential_neighbours_index_list.append(Point(x-1,y+1))
+        potential_neighbours_index_list.append(Point(x-1,y-1))
+        potential_neighbours_index_list.append(Point(x,y-1))
+        potential_neighbours_index_list.append(Point(x+1,y-1))
+
+        neighbours_cells_list=[]
+        for cell_index in potential_neighbours_index_list:
+
+            if self.check_is_index_proply(cell_index):
+                cell=self.get_cell_with_index(cell_index)
+                if cell==first_cell or cell==parrent_cell.parrent:
+                    continue
+                if cell.is_visited:
+                    neighbours_cells_list.append(cell)
+                #is in search range
+                elif (check_is_in_dron_search_range_back(cell.position,uav.position,game_state.intruder.position,20) or get_2d_distance(cell.position,uav.position)<settings.tier1_distance_from_intruder*0.2):
+
+                    #assing points
+                    points=self.get_cell_points_back(cell, game_state, settings)
+                    cell.set_points(points)
+                    neighbours_cells_list.append(cell)
+                    if self.fluid_memory[cell_index.y][cell_index.x]!=100:
+                        self.fluid_memory[cell_index.y][cell_index.x]=12
+
+        return neighbours_cells_list
+
+    def get_cell_points_back(self, cell, game_state, settings):
+        if(get_2d_distance(game_state.intruder.position,cell.position)>=settings.tier1_distance_from_intruder):
+            return 1
+        else:
+            return 0
+
+
+
 
 
 

@@ -94,6 +94,23 @@ class Visualization_event(Event):
         elements_to_draw.append((point_x, point_y, "y"))
 
 
+        #draw tier1 range
+
+        tier_1_positon=game_state.intruder.position
+        step=1
+        point_x,point_y=[],[]
+        for i in range(0,360):
+            angle=math.radians(i*step)
+            pose_point=get_2d_vector_from_polar(angle, settings.back_distance)
+            pose_point[0]=pose_point[0]
+            pose_point[1]=pose_point[1]
+
+            point_x.append(pose_point[0])
+            point_y.append(pose_point[1])
+        elements_to_draw.append((point_x, point_y, "b"))
+
+
+
 
         if (game_state.visualize_first):
             # game_state.fig, game_state.axs = plt.subplots()

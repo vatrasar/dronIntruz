@@ -1,3 +1,5 @@
+import random
+
 import matplotlib.pyplot as plt
 import numpy as np
 import matplotlib.pyplot as plt
@@ -5,4 +7,6 @@ import numpy as np
 from matplotlib.figure import Figure
 import math
 
-print(370.5%360)
+rand=random.Random(678)
+for i in range(0,200):
+    print(rand.random())
