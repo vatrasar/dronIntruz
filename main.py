@@ -15,7 +15,7 @@ from events.visualisation_event import plan_visualize
 
 def main():
     settings=Settings()
-    rand=random.Random(689)
+    rand=random.Random(654)
     try:
         settings.get_properties()
     except Exception as exp:
@@ -46,13 +46,14 @@ def main():
             break
 
         game_state.update_elements_positions(settings)
+        game_state.check_collisions(settings,events_list)
+        if(closet_event in events_list.event_list):
+            closet_event.handle_event(events_list,game_state,settings,rand)
 
-        closet_event.handle_event(events_list,game_state,settings,rand)
-
-        is_collision=game_state.check_collisions()
+        game_state.check_collisions(settings,events_list)
         game_state.update_points_and_energy()
 
-        if(is_collision or game_state.intruder.health<=0):
+        if(game_state.intruder.health<=0):
             statistics.update_stac()
             break
 

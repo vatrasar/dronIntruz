@@ -164,14 +164,14 @@ def plan_move_back(game_state,settings,rand,event_list:Event_list,uav:Uav):
         path:list=search_p_a_back(game_state,settings,uav)
         if(len(path)<=1):#no rescue path
             is_new_position_correct = False
-            while(not(is_new_position_correct)):
-                temp_path=select_temp_path_back()
-                if(len(temp_path)<=1):#no temp path
-                    uav.set_status(UavStatus.WAIT)
-                    break
-                time=get_time_to_reach_point_in_streinght_line(uav.position,temp_path[1].position,settings.v_of_uav)
-                time=time+game_state.t_curr
-                is_new_position_correct=game_state.is_correct(temp_path[1],time)
+
+            temp_path=select_temp_path_back()
+            if(len(temp_path)<=1):#no temp path
+                uav.set_status(UavStatus.WAIT)
+                break
+            time=get_time_to_reach_point_in_streinght_line(uav.position,temp_path[1].position,settings.v_of_uav)
+            time=time+game_state.t_curr
+            is_new_position_correct=game_state.is_correct(temp_path[1],time)
         else:
             time = get_time_to_reach_point_in_streinght_line(uav.position, path[1].position,
                                                         settings.v_of_uav)
@@ -180,7 +180,7 @@ def plan_move_back(game_state,settings,rand,event_list:Event_list,uav:Uav):
 
 
     uav_distance_to_intruder=get_2d_distance(uav.position,game_state.intruder.position)
-    if(0<uav_distance_to_intruder<settings.tier1_distance_from_intruder and len(path)>0):# return from attack
+    if(0<uav_distance_to_intruder<settings.tier1_distance_from_intruder and len(path)>1):# return from attack
         dt_arrive=get_time_to_reach_point_in_streinght_line(uav.position, path[1].position,settings.v_of_uav)
         event_time=dt_arrive+game_state.t_curr
         next_status=UavStatus.TIER_1

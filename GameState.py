@@ -4,6 +4,7 @@ from Enums.StatusEnum import UavStatus, HandStatus, Sides
 from GameObjects.Hand import Hand
 from GameObjects.Intruder import Intruder
 from GameObjects import Uav
+from tools.geometric_tools import get_2d_distance
 
 
 class GameState():
@@ -33,6 +34,8 @@ class GameState():
         self.t_curr=new_time
 
     def update_elements_positions(self,settings):
+
+
         for uav in self.uav_list:
             uav.update_position(self.t_curr, settings)
 
@@ -40,8 +43,23 @@ class GameState():
             if hand.next_event!=None:
                 hand.update_position(self.t_curr, settings)
 
-    def check_collisions(self):
-        pass
+    def check_collisions(self,settings,event_list):
+        uav_list_to_delete=[]
+        for uav in self.uav_list:
+            for hand in self.hands_list:
+                if get_2d_distance(uav.position,hand.position)<settings.hand_size+settings.uav_size:
+                    uav_list_to_delete.append(uav)
+
+        for uav_to_delete in uav_list_to_delete:
+            print("colision!")
+
+            event_list.delete_event(uav_to_delete.next_event)
+            for hand in self.hands_list:
+                if hand.chasing_drone==uav_to_delete:
+                    hand.set_chasing_drone(None)
+            self.uav_list.remove(uav_to_delete)
+
+
 
     def update_points_and_energy(self):
         pass

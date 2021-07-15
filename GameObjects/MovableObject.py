@@ -56,6 +56,8 @@ class MovableObject():
             return
 
         else:
+            if get_2d_distance(self.position,self.next_event.target_position)<0.001:
+                return
             transofrm_between_points=get_transform_between_points(self.position,self.next_event.target_position)
             velocity_vector=get_vector_with_length_and_direction(settings.v_of_uav,transofrm_between_points)
             move_vector=get_move_point(velocity_vector,delta_time,self.position)
