@@ -29,6 +29,7 @@ class GameState():
 
 
 
+
     #intruz
     def update_time(self,new_time):
         self.t_curr=new_time

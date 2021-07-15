@@ -39,7 +39,7 @@ def main():
 
 
         game_state.update_time(new_time=closet_event.time_of_event)
-        statistics.update_stac()
+        statistics.update_stac(game_state,settings)
         print("check :"+str(game_state.t_curr))
         if(game_state.t_curr>settings.T): #end of loop
             statistics.save()
@@ -54,7 +54,8 @@ def main():
         game_state.update_points_and_energy()
 
         if(game_state.intruder.health<=0):
-            statistics.update_stac()
+            statistics.update_stac(game_state,settings)
+            statistics.save()
             break
 
 
