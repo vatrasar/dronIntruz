@@ -8,7 +8,7 @@ from Map.FluidCel import FluidCell
 from Map.Game_Map import GameMap
 from Settings import Settings
 from tools.geometric_tools import get_2d_distance
-from tools.velocity_tools import get_time_to_reach_point_in_streinght_line
+from tools.velocity_tools import get_time_to_reach_point_in_streinght_line, get_position_on_line_base_on_travel_time
 
 
 def build_discrete_map(game_state:GameState,settings:Settings,uav):
@@ -138,7 +138,8 @@ def floading_algo_attack(game_map, game_state, settings, uav):
                 time_to_reach_position_by_hand = get_time_to_reach_point_in_streinght_line(hand.position,
                                                                                            neighbour.position,
                                                                                            settings.velocity_hand)
-                if (time_to_reach_position_by_hand < arrive_time):
+                hand_estimated_position=get_position_on_line_base_on_travel_time(hand.position,neighbour.position,settings.velocity_hand,arrive_time)
+                if (time_to_reach_position_by_hand < arrive_time) and get_2d_distance(hand_estimated_position,neighbour.position)>1.3*(settings.hand_size+settings.uav_size):
                     is_point_avaiable = False
                     break
 

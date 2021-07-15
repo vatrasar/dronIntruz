@@ -38,11 +38,10 @@ class MovableObject():
         self.next_event=next_event
 
     def update_position(self, t_curr,settings):
-        delta_time=None
-        try:
-            delta_time=t_curr-self.next_event.last_postion_update_time
-        except Exception:
-            print("lokl")
+
+
+        delta_time=t_curr-self.next_event.last_postion_update_time
+
         new_postion=None
 
         if delta_time==0.0:

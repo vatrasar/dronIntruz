@@ -96,7 +96,7 @@ class Move_along(Event):
                         else:#move on tier 1
                             plan_move_along(game_state,settings,rand,event_list,uav)
                     else:
-                        plan_move_along(game_state,settings,rand,event_list,uav)
+                        plan_move_back(game_state,settings,rand,event_list,uav)
 
     def palan_docking_on_tier1(self, event_list, game_state, settings, uav):
         angle = get_vector_angle(uav.position)
@@ -205,6 +205,8 @@ def plan_move_back(game_state,settings,rand,event_list:Event_list,uav:Uav):
         new_event = Move_along(event_time, uav.position, uav,next_status,game_state.t_curr)
         uav.plan_help()
         event_list.append_event(new_event,uav,UavStatus.ON_WAY)
+    if uav.next_event==None:
+        print("liul")
 
 
 
