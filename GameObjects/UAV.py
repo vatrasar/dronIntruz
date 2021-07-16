@@ -17,6 +17,7 @@ class Uav(MovableObject):
     def __init__(self,x,y,status, points,velocity):
         super(Uav, self).__init__(x,y,status,40,velocity)
         self.points=points
+        self.last_path=[]
 
 
 
@@ -30,5 +31,8 @@ class Uav(MovableObject):
 
     def plan_help(self):
         pass
+
+    def add_points(self, points):
+        self.points=self.points+points
 
     

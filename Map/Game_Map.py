@@ -202,7 +202,7 @@ class GameMap():
         angle = math.degrees(convert_to_360(angle))
         for arange in self.poin_ranges:
             if arange[0] <= angle and arange[1] > angle and get_2d_distance(cell.position,
-                                                                            game_state.intruder.position) < settings.intuder_size*1.3 + settings.uav_size:
+                                                                            game_state.intruder.position) < settings.back_distance*1.1:
                 return arange[2]
         return 0
 

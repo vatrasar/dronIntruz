@@ -30,9 +30,25 @@ def create_path(best_cell:FluidCell):
     return path
 
 
+def is_last_path_ok(last_path:typing.List[FluidCell], game_state:GameState,settings):
+    if len(last_path)<2:
+        return False
+    current_cell=last_path[1]
+    last_path.remove(current_cell)
+    for cell in last_path:
+        cell.uav_arrive_time=cell.uav_arrive_time-current_cell.uav_arrive_time
+        if not(is_point_save(cell.uav_arrive_time,game_state,cell,settings)):
+            return False
+
+    return True
+
+
 
 
 def search_p_a_attack(game_state:GameState,settings,uav:Uav):
+    if(is_last_path_ok(uav.last_path,game_state,settings)):
+        return uav.last_path
+
     game_map:GameMap=build_discrete_map(game_state, settings,uav)
     floading_algo_attack(game_map, game_state, settings, uav)
     if(game_map.has_points_on_path()):
@@ -134,14 +150,7 @@ def floading_algo_attack(game_map, game_state, settings, uav):
             arrive_time = new_parrent.uav_arrive_time + distance / settings.v_of_uav
             is_point_avaiable = True
             # check hand arrive_time
-            for hand in game_state.hands_list:
-                time_to_reach_position_by_hand = get_time_to_reach_point_in_streinght_line(hand.position,
-                                                                                           neighbour.position,
-                                                                                           settings.velocity_hand)
-                hand_estimated_position=get_position_on_line_base_on_travel_time(hand.position,neighbour.position,settings.velocity_hand,arrive_time)
-                if (time_to_reach_position_by_hand < arrive_time) and get_2d_distance(hand_estimated_position,neighbour.position)>1.3*(settings.hand_size+settings.uav_size):
-                    is_point_avaiable = False
-                    break
+            is_point_avaiable = is_point_save(arrive_time, game_state,  neighbour, settings)
 
             if is_point_avaiable and is_parrent and neighbour.is_queue==False:
                 if neighbour.points==0:
@@ -155,11 +164,25 @@ def floading_algo_attack(game_map, game_state, settings, uav):
         floadin_queue.extend(parents_list)
 
 
-
-
+def is_point_save(arrive_time, game_state, neighbour, settings):
+    is_point_avaiable=True
+    for hand in game_state.hands_list:
+        time_to_reach_position_by_hand = get_time_to_reach_point_in_streinght_line(hand.position,
+                                                                                   neighbour.position,
+                                                                                   settings.velocity_hand)
+        hand_estimated_position = get_position_on_line_base_on_travel_time(hand.position, neighbour.position,
+                                                                           settings.velocity_hand, arrive_time)
+        if (time_to_reach_position_by_hand < arrive_time) or get_2d_distance(hand_estimated_position,
+                                                                              neighbour.position) > 1.3 * (
+                settings.hand_size + settings.uav_size):
+            is_point_avaiable = False
+            break
+    return is_point_avaiable
 
 
 def search_p_a_back(game_state:GameState,settings,uav:Uav) -> list:
+    if (is_last_path_ok(uav.last_path, game_state, settings)):
+        return uav.last_path
     game_map: GameMap = build_discrete_map(game_state, settings, uav)
     floading_algo_back(game_map, game_state, settings, uav)
     if (game_map.has_points_on_path()):

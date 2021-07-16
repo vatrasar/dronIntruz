@@ -3,10 +3,11 @@ import typing
 
 from GameState import GameState
 from Map.FluidCel import FluidCell
+from Map.Game_Map import GameMap
 
 from events.Move_r import plan_move_r
 from tools.geometric_tools import get_2d_distance, get_random_position, get_vector_angle, get_2d_vector_from_polar
-from tools.search_tools import select_temp_path_back, search_p_a_back, search_p_a_attack
+from tools.search_tools import select_temp_path_back, search_p_a_back, search_p_a_attack, build_discrete_map
 from tools.velocity_tools import get_position_on_circle_base_on_travel_time, get_time_to_reach_point_in_streinght_line, \
     get_d_t_arrive_poison
 
@@ -48,6 +49,7 @@ class Move_along(Event):
             if settings.tier1_distance_from_intruder-get_2d_distance(uav.position, game_state.intruder.position) < settings.back_distance:
                 #docking procedure on tier 1
                 self.palan_docking_on_tier1(event_list, game_state, settings, uav)
+                uav.last_path=[]
                 return
             plan_move_back(game_state,settings,rand,event_list,uav)
             return
@@ -55,11 +57,15 @@ class Move_along(Event):
 
             # check if is time to start back
             if get_2d_distance(uav.position, game_state.intruder.position) < settings.back_distance or UavStatus.ON_BACK==uav.status:
-
+                #assing points
+                self.prepare_to_abck(game_state, settings, uav)
                 plan_move_back(game_state,settings,rand,event_list,uav)
+
+
                 return
 
             path=search_p_a_attack(game_state,settings,uav)
+            uav.last_path=path
             if(len(path)>1):
 
                 if(settings.mode=="RW-RA"):
@@ -96,7 +102,16 @@ class Move_along(Event):
                         else:#move on tier 1
                             plan_move_along(game_state,settings,rand,event_list,uav)
                     else:
+                        self.prepare_to_abck(game_state, settings, uav)
                         plan_move_back(game_state,settings,rand,event_list,uav)
+
+    def prepare_to_abck(self, game_state, settings, uav):
+        game_map: GameMap = build_discrete_map(game_state, settings, uav)
+        uav_cell_index = game_map.get_point_on_map_index(uav.position.x, uav.position.y)
+        cell = game_map.get_cell_with_index(Point(uav_cell_index[0], uav_cell_index[1]))
+        points = game_map.get_cell_points(cell, game_state, settings)
+        uav.add_points(points)
+        uav.last_path = []
 
     def palan_docking_on_tier1(self, event_list, game_state, settings, uav):
         angle = get_vector_angle(uav.position)
@@ -162,6 +177,7 @@ def plan_move_back(game_state,settings,rand,event_list:Event_list,uav:Uav):
 
     while(not(is_new_position_correct)):
         path:list=search_p_a_back(game_state,settings,uav)
+        uav.last_path=path
         if(len(path)<=1):#no rescue path
             is_new_position_correct = False
 
