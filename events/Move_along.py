@@ -32,6 +32,7 @@ from Enums.StatusEnum import UavStatus
 
 
 
+
 class Move_along(Event):
 
 
@@ -78,15 +79,12 @@ class Move_along(Event):
 
                     if(x<settings.prob_of_attack):
                         plan_move_attakc(game_state,settings,event_list,uav,path)
-                        print("attack:")
+                        # print("attack:")
                     else:
                         x=rand.random()
                         if(x<settings.prob_of_return_to_T2):
                             uav.set_status(UavStatus.TIER_2)
                             plan_move_along(game_state,settings,rand,event_list,uav)#return 2t->1T
-                        elif uav.status==UavStatus.ON_ATTACK:
-                            plan_move_along(game_state, settings, rand, event_list, uav)
-
                         else:#move on tier1
                             plan_move_along(game_state,settings,rand,event_list,uav)
                     return
@@ -140,6 +138,7 @@ def plan_move_along(game_state,settings,rand,event_list:Event_list,uav:Uav):
                 is_new_position_correct=game_state.is_correct(new_position,dt_arrive)
         else:#return from tier 2
             is_new_position_correct = False
+
             while(not(is_new_position_correct)):
                 new_position = get_random_position(rand, game_state, settings)
                 dt_arrive=uav.get_time_to_position(new_position)
@@ -167,7 +166,7 @@ def plan_move_along(game_state,settings,rand,event_list:Event_list,uav:Uav):
 
 
 def plan_move_back(game_state,settings,rand,event_list:Event_list,uav:Uav):
-    print("atak stop")
+    # print("atak stop")
     uav.set_status(UavStatus.ON_BACK)
     is_new_position_correct=False
     path=None

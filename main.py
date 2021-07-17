@@ -40,7 +40,7 @@ def main():
 
         game_state.update_time(new_time=closet_event.time_of_event)
         statistics.update_stac(game_state,settings)
-        print("check :"+str(game_state.t_curr))
+        print("time :"+str(game_state.t_curr))
         if(game_state.t_curr>settings.T): #end of loop
             statistics.save()
             break

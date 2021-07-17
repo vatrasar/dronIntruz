@@ -128,7 +128,7 @@ def plan_move_r(event_list:Event_list, owner:Hand,game_state:GameState,settings:
         if(owner.status!=HandStatus.TIER_0):
             target=None
             target = owner.get_hand_tier0_position( settings)
-            time_of_event=get_time_to_reach_point_in_streinght_line(owner.position,target,settings.velocity_hand)
+            time_of_event=game_state.t_curr+get_time_to_reach_point_in_streinght_line(owner.position,target,settings.velocity_hand)
             new_event=Move_r(time_of_event,target,owner,HandStatus.TIER_0,game_state.t_curr)
             event_list.append_event(new_event,owner,HandStatus.BACK)
 
@@ -138,6 +138,7 @@ def plan_move_r(event_list:Event_list, owner:Hand,game_state:GameState,settings:
 
 class Move_r(Event):
     def handle_event(self, event_list: Event_list, game_state, settings: Settings, rand: random.Random):
+        super(Move_r, self).handle_event(event_list,game_state,settings,rand)
         self.event_owner.set_new_position(self.target_position)
         plan_move_r(event_list,self.event_owner,game_state,settings)
 
