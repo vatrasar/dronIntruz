@@ -68,7 +68,7 @@ class Settings():
                 property_name,property_value=self.get_property_pair(record)
                 self.check_property(property_name,property_value)
         self.back_distance = 2 * self.intuder_size
-
+        self.minimal_hand_move_time = 0.05
 
 
         return setting_dict
