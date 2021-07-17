@@ -172,9 +172,7 @@ def is_point_save(arrive_time, game_state, neighbour, settings):
                                                                                    settings.velocity_hand)
         hand_estimated_position = get_position_on_line_base_on_travel_time(hand.position, neighbour.position,
                                                                            settings.velocity_hand, arrive_time)
-        if (time_to_reach_position_by_hand < arrive_time) or get_2d_distance(hand_estimated_position,
-                                                                              neighbour.position) > 1.3 * (
-                settings.hand_size + settings.uav_size):
+        if (time_to_reach_position_by_hand < arrive_time) or get_2d_distance(hand_estimated_position,neighbour.position) < 1.3 * (settings.hand_size + settings.uav_size):
             is_point_avaiable = False
             break
     return is_point_avaiable
