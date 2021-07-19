@@ -3,7 +3,7 @@ import typing
 
 import numpy as np
 
-from GameObjects import Point, Uav
+from GameObjects import Point, Uav, MovableObject
 from GameState import GameState
 from Map.FluidCel import FluidCell
 from Settings import Settings
@@ -74,14 +74,33 @@ class GameMap():
         return (x,y)
 
 
+    def set_object_on_map(self,object:MovableObject,object_size,object_id):
+        drones_candidates: typing.List[Point] = []
 
+        x_i, y_i = self.get_point_on_map_index(object.position.x, object.position.y)
+        drones_candidates.append(Point(x_i, y_i))
+        while (len(drones_candidates) != 0):
 
+            drone_candidate = drones_candidates[0]
+            drones_candidates.remove(drone_candidate)
+            if get_2d_distance(self.get_cell_with_index(drone_candidate).position, object.position) <= object_size:
+                self.map_memmory[drone_candidate.y][drone_candidate.x] = object_id
+                self.fluid_memory[drone_candidate.y][drone_candidate.x] = object_id
+
+                neighbours = self.get_cell_neighbours(drone_candidate.x, drone_candidate.y)
+                neighbours_to_check = []
+                for neighbour in neighbours:
+                    if self.map_memmory[neighbour.y][neighbour.x] == 0:
+                        neighbours_to_check.append(neighbour)
+
+                drones_candidates.extend(neighbours_to_check)
 
     def update_map(self, game_state:GameState, settings,uav:Uav):
 
         self.map_memmory = np.zeros((self.dimension, self.dimension), np.int32)
         self.fluid_map=[]
-        for i in range(0,self.dimension):
+
+        for i in range(0,self.dimension): #build fluid_map
             self.fluid_map.append([])
             for p in range(0, self.dimension):
 
@@ -90,50 +109,22 @@ class GameMap():
                 point = Point(point[0], point[1])
                 new_cell = FluidCell(-1, point, p, i)
                 self.fluid_map[i].append(new_cell)
-                # #drones
-                for drone in game_state.uav_list:
-                    point=self.convert_index_to_point(p,i)
-                    point=Point(point[0],point[1])
-                    if get_2d_distance(point,drone.position)<=settings.uav_size:
 
-                        self.map_memmory[i][p]=self.map_memmory[i][p]+1
-                        self.fluid_memory[i][p] = 100
 
-                #hands
-                for hand in game_state.hands_list:
-                    point=self.convert_index_to_point(p,i)
-                    point=Point(point[0],point[1])
-                    if get_2d_distance(point,hand.position)<=settings.hand_size:
-                        self.map_memmory[i][p]=self.map_memmory[i][p]+1
-                        self.fluid_memory[i][p]= 100
+        #seting object on map, code works but i turned it of becase of performacnes
+        # for uav in game_state.uav_list:#set uav positions on map
+        #     self.set_object_on_map(uav,settings.uav_size,100)
+        #
+        # for hand in game_state.hands_list:  # set uav positions on map
+        #     self.set_object_on_map(hand,settings.hand_size,200)
+        #
+        #
+        # self.set_object_on_map(game_state.intruder,settings.intuder_size,300)
 
 
 
-                if get_2d_distance(point, game_state.intruder.position) <= settings.intuder_size:
-                    self.map_memmory[i][p] = self.map_memmory[i][p]+1
-                    self.fluid_memory[i][p] = 100
 
 
-                #
-                # angle=get_vector_angle(new_cell.position)
-                #
-                # angle=math.degrees(convert_to_360(angle))
-                # #
-                #
-                #
-                # for arange in self.poin_ranges:
-                #     if arange[0]<=angle and arange[1]>angle and get_2d_distance(new_cell.position,game_state.intruder.position)<settings.intuder_size+settings.uav_size:
-                #         new_cell.set_points(arange[2])
-                #
-                # if(check_is_in_dron_search_range(new_cell.position,uav.position,game_state.intruder.position,20) or get_2d_distance(new_cell.position,uav.position)<settings.tier1_distance_from_intruder*0.2):
-                #     new_cell.set_is_safe(True)
-                # if new_cell.is_safe:
-                #     fluid_memory[p][i]=1
-                # else:
-                #     fluid_memory[p][i]=0
-                # if self.map_memmory[p][i]!=0:
-                #     fluid_memory[p][i] = 3
-        # print("tets")
 
 
     def get_floading_point(self, position)->FluidCell:
@@ -145,15 +136,7 @@ class GameMap():
 
         x=parrent_cell.index.x
         y=parrent_cell.index.y
-        potential_neighbours_index_list=[]
-        potential_neighbours_index_list.append(Point(x+1,y))
-        potential_neighbours_index_list.append(Point(x-1,y))
-        potential_neighbours_index_list.append(Point(x+1,y+1))
-        potential_neighbours_index_list.append(Point(x,y+1))
-        potential_neighbours_index_list.append(Point(x-1,y+1))
-        potential_neighbours_index_list.append(Point(x-1,y-1))
-        potential_neighbours_index_list.append(Point(x,y-1))
-        potential_neighbours_index_list.append(Point(x+1,y-1))
+        potential_neighbours_index_list = self.get_cell_neighbours(x, y)
 
         neighbours_cells_list=[]
         for cell_index in potential_neighbours_index_list:
@@ -196,6 +179,18 @@ class GameMap():
         #
         #
         # return neighbours_list
+
+    def get_cell_neighbours(self, x, y)->typing.List[Point]:
+        potential_neighbours_index_list = []
+        potential_neighbours_index_list.append(Point(x + 1, y))
+        potential_neighbours_index_list.append(Point(x - 1, y))
+        potential_neighbours_index_list.append(Point(x + 1, y + 1))
+        potential_neighbours_index_list.append(Point(x, y + 1))
+        potential_neighbours_index_list.append(Point(x - 1, y + 1))
+        potential_neighbours_index_list.append(Point(x - 1, y - 1))
+        potential_neighbours_index_list.append(Point(x, y - 1))
+        potential_neighbours_index_list.append(Point(x + 1, y - 1))
+        return potential_neighbours_index_list
 
     def get_cell_points(self, cell, game_state, settings):
         angle = get_vector_angle(cell.position)
@@ -256,15 +251,7 @@ class GameMap():
 
         x=parrent_cell.index.x
         y=parrent_cell.index.y
-        potential_neighbours_index_list=[]
-        potential_neighbours_index_list.append(Point(x+1,y))
-        potential_neighbours_index_list.append(Point(x-1,y))
-        potential_neighbours_index_list.append(Point(x+1,y+1))
-        potential_neighbours_index_list.append(Point(x,y+1))
-        potential_neighbours_index_list.append(Point(x-1,y+1))
-        potential_neighbours_index_list.append(Point(x-1,y-1))
-        potential_neighbours_index_list.append(Point(x,y-1))
-        potential_neighbours_index_list.append(Point(x+1,y-1))
+        potential_neighbours_index_list = self.get_cell_neighbours(x, y)
 
         neighbours_cells_list=[]
         for cell_index in potential_neighbours_index_list:

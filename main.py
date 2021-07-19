@@ -15,7 +15,7 @@ from events.visualisation_event import plan_visualize
 
 def main():
     settings=Settings()
-    rand=random.Random(654)
+    rand=random.Random(800)
     try:
         settings.get_properties()
     except Exception as exp:

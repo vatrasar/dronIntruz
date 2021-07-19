@@ -59,7 +59,7 @@ class Move_along(Event):
             # check if is time to start back
             if get_2d_distance(uav.position, game_state.intruder.position) < settings.back_distance or UavStatus.ON_BACK==uav.status:
                 #assing points
-                self.prepare_to_abck(game_state, settings, uav)
+                self.assing_points(game_state, settings, uav)
                 plan_move_back(game_state,settings,rand,event_list,uav)
 
 
@@ -100,10 +100,10 @@ class Move_along(Event):
                         else:#move on tier 1
                             plan_move_along(game_state,settings,rand,event_list,uav)
                     else:
-                        self.prepare_to_abck(game_state, settings, uav)
+                        self.assing_points(game_state, settings, uav)
                         plan_move_back(game_state,settings,rand,event_list,uav)
 
-    def prepare_to_abck(self, game_state, settings, uav):
+    def assing_points(self, game_state, settings, uav):
         game_map: GameMap = build_discrete_map(game_state, settings, uav)
         uav_cell_index = game_map.get_point_on_map_index(uav.position.x, uav.position.y)
         cell = game_map.get_cell_with_index(Point(uav_cell_index[0], uav_cell_index[1]))
