@@ -226,12 +226,12 @@ class GameMap():
 
         return best_cell_in_range
 
-    def get_best_points_in_range_back(self):
+    def get_best_points_in_range_back(self,game_state:GameState,settings:Settings,uav):
         best_cell_in_range=self.fluid_map[0][0]
 
         for row in self.fluid_map:
             for cell in row:
-                if cell.points==1:
+                if cell.points==1 and game_state.is_correct_drone(cell.position,cell.uav_arrive_time+game_state.t_curr,uav,settings):
                     return cell
 
 
@@ -247,7 +247,7 @@ class GameMap():
             self.fluid_memory[element.index.y][element.index.x]=i
             i=i+1
 
-    def get_back_avaiable_neighbours(self, parrent_cell:FluidCell,uav,game_state:GameState,settings:Settings,first_cell):
+    def get_back_avaiable_neighbours(self, parrent_cell:FluidCell,uav,game_state:GameState,settings:Settings,first_cell,temp_ratio):
 
         x=parrent_cell.index.x
         y=parrent_cell.index.y
@@ -266,7 +266,7 @@ class GameMap():
                 elif (check_is_in_dron_search_range_back(cell.position,uav.position,game_state.intruder.position,20) or get_2d_distance(cell.position,uav.position)<settings.tier1_distance_from_intruder*0.2):
 
                     #assing points
-                    points=self.get_cell_points_back(cell, game_state, settings)
+                    points=self.get_cell_points_back(cell, game_state, settings,temp_ratio)
                     cell.set_points(points)
                     neighbours_cells_list.append(cell)
                     if self.fluid_memory[cell_index.y][cell_index.x]!=100:
@@ -274,8 +274,8 @@ class GameMap():
 
         return neighbours_cells_list
 
-    def get_cell_points_back(self, cell, game_state, settings):
-        if(get_2d_distance(game_state.intruder.position,cell.position)>=settings.tier1_distance_from_intruder):
+    def get_cell_points_back(self, cell, game_state, settings,temp_ratio=1):
+        if(get_2d_distance(game_state.intruder.position,cell.position)>=settings.tier1_distance_from_intruder*temp_ratio):
             return 1
         else:
             return 0

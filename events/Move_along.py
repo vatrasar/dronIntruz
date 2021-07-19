@@ -180,7 +180,7 @@ def plan_move_back(game_state,settings,rand,event_list:Event_list,uav:Uav):
         if(len(path)<=1):#no rescue path
             is_new_position_correct = False
 
-            temp_path=select_temp_path_back()
+            temp_path=select_temp_path_back(game_state,settings,uav)
             if(len(temp_path)<=1):#no temp path
                 uav.set_status(UavStatus.WAIT)
                 break
@@ -203,23 +203,23 @@ def plan_move_back(game_state,settings,rand,event_list:Event_list,uav:Uav):
             next_status=UavStatus.ON_BACK
         new_event=Move_along(event_time,path[1].position,uav,next_status,game_state.t_curr)
         event_list.append_event(new_event,uav,UavStatus.ON_BACK)
-    elif(0<uav_distance_to_intruder<settings.tier1_distance_from_intruder and len(path)==1 and len(temp_path)==1):
+    elif(0<uav_distance_to_intruder<settings.tier1_distance_from_intruder and len(temp_path)>1):
         dt_arrive = get_time_to_reach_point_in_streinght_line(uav.position, temp_path[1].position, settings.v_of_uav)
         event_time = dt_arrive + game_state.t_curr
         next_status = UavStatus.TIER_1
-        if (len(path) > 1):
-            next_status = UavStatus.ON_WAY
-        new_event = Move_along(event_time, temp_path[1].position, uav,next_status,game_state.t_curr)
-        event_list.append_event(new_event,uav,UavStatus.ON_WAY)
+        if (len(temp_path) > 2):
+            next_status = UavStatus.ON_BACK
+        new_event = Move_along(event_time, temp_path[1].position, uav, next_status, game_state.t_curr)
+        event_list.append_event(new_event, uav, UavStatus.ON_BACK)
     elif(0<uav_distance_to_intruder<settings.tier1_distance_from_intruder and uav.status==UavStatus.WAIT):
         dt_arrive =settings.wiat_time
         event_time = dt_arrive + game_state.t_curr
-        next_status = UavStatus.TIER_1
+        next_status = UavStatus.ON_BACK
         if (len(path) > 1):
-            next_status = UavStatus.ON_WAY
+            next_status = UavStatus.ON_BACK
         new_event = Move_along(event_time, uav.position, uav,next_status,game_state.t_curr)
         uav.plan_help()
-        event_list.append_event(new_event,uav,UavStatus.ON_WAY)
+        event_list.append_event(new_event,uav,UavStatus.WAIT)
     if uav.next_event==None:
         print("liul")
 

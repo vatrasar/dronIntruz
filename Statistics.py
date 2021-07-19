@@ -13,31 +13,11 @@ class Statistics():
     def __init__(self):
         self.game_states_list:typing.List[GameState]=[]
     def update_stac(self,game_state,settings):
-        to_svae=self.clone_game_state(game_state, settings)
+        to_svae=game_state.clone_game_state(settings)
         self.settings=settings
         self.game_states_list.append(to_svae)
 
-    def clone_game_state(self,game_state:GameState,settings):
-        stat_game_state=GameState(settings)
 
-        #hands
-        stat_game_state.hands_list=[]
-        for hand in game_state.hands_list:
-            hand_copy=Hand(hand.position.x,hand.position.y,hand.status,hand.velocity,hand.side,settings)
-            hand_copy.position.x=hand.position.x
-            hand_copy.position.y=hand.position.y
-            stat_game_state.hands_list.append(hand_copy)
-
-
-        #drones
-        stat_game_state.uav_list=[]
-        for uav in game_state.uav_list:
-            uav_copy=Uav(uav.position.x,uav.position.y,uav.status,uav.points,uav.velocity)
-            stat_game_state.uav_list.append(uav_copy)
-
-        stat_game_state.t_curr=game_state.t_curr
-
-        return stat_game_state
 
 
 
