@@ -8,6 +8,9 @@ from tools.geometric_tools import get_2d_distance
 from matplotlib import pyplot as plt
 import os
 
+from tools.other_tools import create_folder
+
+
 class Statistics():
 
     def __init__(self):
@@ -23,7 +26,7 @@ class Statistics():
 
 
     def save(self):
-        save_directory = self.create_folder()
+        save_directory = create_folder("./charts")
 
         #distance between uav
         x=[]
@@ -118,21 +121,6 @@ class Statistics():
         # plt.plot(x,y)
         # plt.savefig(save_directory+"/"+"distance_between_uav.svg")
 
-    def create_folder(self):
-        save_directory = "./charts"
-        import os
-        if not os.path.exists(save_directory):
-            os.mkdir(save_directory)
-        for filename in os.listdir(save_directory):
-            file_path = os.path.join(save_directory, filename)
-            try:
-                if os.path.isfile(file_path) or os.path.islink(file_path):
-                    os.unlink(file_path)
-                elif os.path.isdir(file_path):
-                    shutil.rmtree(file_path)
-            except Exception as e:
-                print('Failed to delete %s. Reason: %s' % (file_path, e))
-        return save_directory
 
 
 

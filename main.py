@@ -11,24 +11,32 @@ from events.Move_along import plan_move_along
 import time
 
 from events.visualisation_event import plan_visualize
+from tools.other_tools import create_folder
 
 
 def main():
+
+
     settings=Settings()
     rand=random.Random(800) #800
+
     try:
         settings.get_properties()
     except Exception as exp:
         print(str(exp))
         return
+    if settings.is_visualisation!=0:
+        create_folder(settings.folder_to_save_visualization)
+
 
     game_state=GameState(settings)
     statistics=Statistics()
     events_list=Event_list()
+
     #planning init event for uav
     for uav in game_state.uav_list:
         plan_move_along(game_state,settings,rand,events_list,uav)
-    if settings.is_visualisation:
+    if settings.is_visualisation!=0:
         plan_visualize(events_list,settings,game_state)
 
     while(True): #main simulation loop

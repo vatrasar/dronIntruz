@@ -1,6 +1,6 @@
 uav_number=2 #początkowa liczba dronów w symulacji. mozliwe wartości to 1,2
 hands_number=1 #liczba rąk w symulacji. mozliwe wartości to 0,1,2
-visualization=1 #czy ma być widoczna wizualizacja. 1: jest wizualizacja, 0: brak wizualizacji
+visualization=2 #czy ma być widoczna wizualizacja. 0: brak wizualizacji, 1: jest wizualizacja, 2:wizualizacja zapisywana do folderu
 T=50 #liczba jednostek czasu, do zakończenia symulacji. wartości powyżej 0
 beat_the_score=50 #liczba punktów zdrowia intruza(traci je gdy uav zdobywa punkty). wartości powyżej 0
 intruder_max_energy=50 #Energia intruza. Traci ją przy każdym ruchu. wartości powyżej 0

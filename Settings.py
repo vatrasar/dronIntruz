@@ -42,20 +42,22 @@ class Settings():
             if (property_value > min and property_value<max):
                 return float(str(property_value))
             else:
-                raise Exception("Błąd pliku konfiguracyjnego. %s musi być pomiędzy %f i %f" % (property_name,min,max))
+                raise Exception("Błąd pliku konfiguracyjnego. %s musi być pomiędzy %f i %f " % (property_name,min,max))
 
     def check_int(self,property_value,property_name,min,max,no_max):
+        property_value=int(str(property_value))
         if(no_max):
-            if (property_value > min and property_value<max):
+
+            if (property_value > min):
                 return int(str(property_value))
             else:
-                raise Exception("Błąd pliku konfiguracyjnego. %s musi być większe od %d" % (property_name,min))
+                raise Exception("Błąd pliku konfiguracyjnego. %s ma nieprawidłową wartość"%(property_name))
         else:
 
             if (property_value > min and property_value<max):
                 return int(str(property_value))
             else:
-                raise Exception("Błąd pliku konfiguracyjnego. %s musi być pomiędzy %d i %d" % (property_name,min,max))
+                raise Exception("Błąd pliku konfiguracyjnego. %s ma nieprawidłową wartość"%(property_name) )
 
     def get_properties(self):
         settings_file_name_f=open("settingsFileName.txt")
@@ -69,7 +71,8 @@ class Settings():
                 self.check_property(property_name,property_value)
         self.back_distance = 2 * self.intuder_size
         self.minimal_hand_move_time = 0.05
-
+        self.folder_to_save_visualization = "./visualsation"
+        self.vis_counter=0
 
         return setting_dict
 
@@ -90,7 +93,7 @@ class Settings():
             else:
                 raise Exception("Błąd pliku konfiguracyjnego. %s może być 0,1,2 "%(property_name))
         elif (property_name=="visualization"):
-            self.is_visualisation=self.check_binary(property_value,property_name)
+            self.is_visualisation=self.check_int(property_value,property_name,-1,3,False)
         elif (property_name=="T"):
             self.T=self.check_float(property_value,property_name,0,1,True)
         elif (property_name=="beat_the_score"):

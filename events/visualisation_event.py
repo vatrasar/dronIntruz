@@ -112,7 +112,7 @@ class Visualization_event(Event):
 
 
 
-        if (game_state.visualize_first):
+        if (game_state.visualize_first) and settings.is_visualisation!=2:
             # game_state.fig, game_state.axs = plt.subplots()
             # game_state.axs.set_box_aspect(1)
             plt.ion()
@@ -134,11 +134,17 @@ class Visualization_event(Event):
 
 
         #plt.pause(0.3)
-        plt.draw()
-        plt.pause(0.01)
+        if settings.is_visualisation!=2:
+            plt.draw()
+            plt.pause(0.01)
+            plt.clf()
+        else:
+            settings.vis_counter=settings.vis_counter+1
+            plt.savefig(settings.folder_to_save_visualization+"/"+str(settings.vis_counter)+".png")
+            plt.clf()
         plan_visualize(event_list,settings,game_state)
         # time.sleep(0.3)
-        plt.clf()
+
 
 
     def darw_object(self,resolution, object, object_size, object_x, object_y):
