@@ -18,7 +18,7 @@ def main():
 
 
     settings=Settings()
-    rand=random.Random(800) #800
+
 
     try:
         settings.get_properties()
@@ -28,7 +28,7 @@ def main():
     if settings.is_visualisation!=0:
         create_folder(settings.folder_to_save_visualization)
 
-
+    rand = random.Random(settings.seed)  # 800
     game_state=GameState(settings)
     statistics=Statistics()
     events_list=Event_list()

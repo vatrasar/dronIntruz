@@ -171,6 +171,10 @@ class Settings():
 
             self.search_angle=self.check_float(property_value,property_name,20,360,False)
 
+        elif (property_name=="seed"):
+
+            self.seed=self.check_int(property_value,property_name,0,223,True)
+
         else:
             raise Exception("Błąd pliku konfiguracyjnego, nieznana nazwa właściwości:" +property_name)
 
