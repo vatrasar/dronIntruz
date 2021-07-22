@@ -46,7 +46,7 @@ class Move_along(Event):
         if(uav.status==UavStatus.TIER_2):
             plan_move_along(game_state,settings,rand,event_list,uav)
             return
-        elif(uav.status==UavStatus.ON_BACK):
+        elif(uav.status==UavStatus.ON_BACK or uav.status==UavStatus.ON_TEMP_BACK):
             if settings.tier1_distance_from_intruder-get_2d_distance(uav.position, game_state.intruder.position) < settings.back_distance:
                 #docking procedure on tier 1
                 self.palan_docking_on_tier1(event_list, game_state, settings, uav)
@@ -111,14 +111,18 @@ class Move_along(Event):
         uav.add_points(points)
         uav.last_path = []
 
-    def palan_docking_on_tier1(self, event_list, game_state, settings, uav):
+    def palan_docking_on_tier1(self, event_list, game_state:GameState, settings, uav):
         angle = get_vector_angle(uav.position)
         vector = get_2d_vector_from_polar(angle, settings.tier1_distance_from_intruder)
         docking_position = Point(vector[0], vector[1])
+
         arrive_time = game_state.t_curr + get_time_to_reach_point_in_streinght_line(uav.position, docking_position,
                                                                                     settings.v_of_uav)
-        event = Move_along(arrive_time, docking_position, uav, UavStatus.TIER_1, game_state.t_curr)
-        event_list.append_event(event, uav, UavStatus.ON_BACK)
+        if(game_state.is_correct_drone(docking_position,arrive_time,uav,settings)):
+            event = Move_along(arrive_time, docking_position, uav, UavStatus.TIER_1, game_state.t_curr)
+            event_list.append_event(event, uav, UavStatus.ON_BACK)
+        else:
+            plan_wait(event_list, game_state, settings, uav)
 
     def set_next_status(self, next_status):
         self.next_status=next_status
@@ -206,28 +210,25 @@ def plan_move_back(game_state,settings,rand,event_list:Event_list,uav:Uav):
     elif(0<uav_distance_to_intruder<settings.tier1_distance_from_intruder and len(temp_path)>1):
         dt_arrive = get_time_to_reach_point_in_streinght_line(uav.position, temp_path[1].position, settings.v_of_uav)
         event_time = dt_arrive + game_state.t_curr
-        next_status = UavStatus.TIER_1
-        if (len(temp_path) > 2):
-            next_status = UavStatus.ON_BACK
-        new_event = Move_along(event_time, temp_path[1].position, uav, next_status, game_state.t_curr)
-        event_list.append_event(new_event, uav, UavStatus.ON_BACK)
-    elif(0<uav_distance_to_intruder<settings.tier1_distance_from_intruder and uav.status==UavStatus.WAIT):
-        dt_arrive =settings.wiat_time
-        event_time = dt_arrive + game_state.t_curr
         next_status = UavStatus.ON_BACK
-        if (len(path) > 1):
-            next_status = UavStatus.ON_BACK
-        new_event = Move_along(event_time, uav.position, uav,next_status,game_state.t_curr)
-        uav.plan_help()
-        event_list.append_event(new_event,uav,UavStatus.WAIT)
+        if (len(temp_path) > 2):
+            next_status = UavStatus.ON_TEMP_BACK
+        new_event = Move_along(event_time, temp_path[1].position, uav, next_status, game_state.t_curr)
+        event_list.append_event(new_event, uav, UavStatus.ON_TEMP_BACK)
+    elif(0<uav_distance_to_intruder<settings.tier1_distance_from_intruder and uav.status==UavStatus.WAIT):
+        plan_wait(event_list, game_state,  settings, uav)
     if uav.next_event==None:
         print("liul")
 
 
+def plan_wait(event_list, game_state, settings, uav):
+    dt_arrive = settings.wiat_time
+    event_time = dt_arrive + game_state.t_curr
+    next_status = UavStatus.ON_BACK
 
-
-
-
+    new_event = Move_along(event_time, uav.position, uav, next_status, game_state.t_curr)
+    uav.plan_help()
+    event_list.append_event(new_event, uav, UavStatus.WAIT)
 
 
 def plan_move_attakc(game_state:GameState,settings,event_list:Event_list,uav:Uav,path:typing.List[FluidCell]):

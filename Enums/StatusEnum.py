@@ -10,6 +10,7 @@ class UavStatus(Enum):
     ON_WAY=5
     ON_ATTACK=6
     ON_BACK=7
+    ON_TEMP_BACK=8
 
 class HandStatus(Enum):
     TIER_0=1
