@@ -1,6 +1,6 @@
 uav_number=2 #początkowa liczba dronów w symulacji. mozliwe wartości to 1,2
 hands_number=1 #liczba rąk w symulacji. mozliwe wartości to 0,1,2
-visualization=1 #czy ma być widoczna wizualizacja. 0: brak wizualizacji, 1: jest wizualizacja, 2:wizualizacja zapisywana do folderu
+visualization=0 #czy ma być widoczna wizualizacja. 0: brak wizualizacji, 1: jest wizualizacja, 2:wizualizacja zapisywana do folderu
 T=50 #liczba jednostek czasu, do zakończenia symulacji. wartości powyżej 0
 beat_the_score=50 #liczba punktów zdrowia intruza(traci je gdy uav zdobywa punkty). wartości powyżej 0
 intruder_max_energy=50 #Energia intruza. Traci ją przy każdym ruchu. wartości powyżej 0
@@ -20,4 +20,4 @@ visualzation_update_interval=0.5 #co ile jednostek czasu ma być aktualizowana w
 r_of_LR=15 #Maksymalny zasięg ręki. wartość powyżej 0. r_of_LR musi być większe niż suma intuder_size i uav_size
 map_resolution=1 #Rozdzielczość mapy tworzonej na potrzeby algorytmu poszukującego ścieżki. wartość powyżej 0
 search_angle=30 #kąt, który określa wielkość stożka poszukiwań. wartość miedzy 20 a 360
-seed=2354 #ziarno generatora liczb losowych
+seed=800 #ziarno generatora liczb losowych
