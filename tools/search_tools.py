@@ -94,12 +94,8 @@ def floading_algo_back(game_map:GameMap, game_state, settings, uav,temp_ratio):
             distance = get_2d_distance(neighbour.position, new_parrent.position)
             arrive_time = new_parrent.uav_arrive_time + distance / settings.v_of_uav
             is_point_avaiable = True
-            # check hand arrive_time
-            for hand in game_state.hands_list:
-                time_to_reach_position_by_hand = get_time_to_reach_point_in_streinght_line(hand.position,
-                                                                                           neighbour.position,
-                                                                                           settings.velocity_hand)
-                if (not(game_state.is_point_save(arrive_time,game_state,neighbour,settings))):
+
+            if (not(game_state.is_point_save(arrive_time,game_state,neighbour,settings))):
                     is_point_avaiable = False
                     break
 

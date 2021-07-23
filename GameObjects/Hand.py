@@ -26,9 +26,9 @@ class Hand(MovableObject):
     def get_hand_tier0_position(self, settings):
         target = None
         if (self.side == Sides.RIGHT):
-            target = get_2d_vector_from_polar(3.14 / 2, settings.intuder_size + settings.hand_size)
+            target = get_2d_vector_from_polar(0, settings.intuder_size + settings.hand_size)
         else:
-            target = get_2d_vector_from_polar(3.14 * 3 / 2, settings.intuder_size + settings.hand_size)
+            target = get_2d_vector_from_polar(3.14, settings.intuder_size + settings.hand_size)
 
         return Point(target[0],target[1])
 
