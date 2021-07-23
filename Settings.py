@@ -73,6 +73,7 @@ class Settings():
         self.minimal_hand_move_time = 0.05
         self.folder_to_save_visualization = "./visualsation"
         self.vis_counter=0
+        self.minimal_points=0
 
         return setting_dict
 

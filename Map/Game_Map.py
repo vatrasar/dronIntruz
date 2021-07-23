@@ -107,7 +107,7 @@ class GameMap():
 
                 point = self.convert_index_to_point(p, i)
                 point = Point(point[0], point[1])
-                new_cell = FluidCell(-1, point, p, i)
+                new_cell = FluidCell(-1, point, p, i,settings)
                 self.fluid_map[i].append(new_cell)
 
 
@@ -215,7 +215,7 @@ class GameMap():
 
         return False
 
-    def get_best_points_in_range(self):
+    def get_best_points_in_range(self,settings):
         best_cell_in_range=self.fluid_map[0][0]
 
         for row in self.fluid_map:
@@ -223,7 +223,8 @@ class GameMap():
                 if best_cell_in_range.points<cell.points and cell.is_visited==True:
                     best_cell_in_range=cell
 
-
+        if best_cell_in_range.points==settings.minimal_points:
+            return None
         return best_cell_in_range
 
     def get_best_points_in_range_back(self,game_state:GameState,settings:Settings,uav):

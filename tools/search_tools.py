@@ -52,8 +52,8 @@ def search_p_a_attack(game_state:GameState,settings,uav:Uav):
     game_map:GameMap=build_discrete_map(game_state, settings,uav)
     floading_algo_attack(game_map, game_state, settings, uav)
     if(game_map.has_points_on_path()):
-        best_cell=game_map.get_best_points_in_range()
-        if best_cell.points==-1:
+        best_cell=game_map.get_best_points_in_range(settings)
+        if best_cell.points==None:
             return []
         path=create_path(best_cell)
         game_map.show_path(path)

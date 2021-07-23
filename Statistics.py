@@ -130,18 +130,34 @@ class Statistics():
 
 
         #log file
+        header_row=["czas","uav1 pozycja","uav1 status"]
+        if self.settings.uav_number==2:
+            header_row.append("uav2 pozycja")
+            header_row.append("uav2 status")
+
+        if self.settings.hands_number>0:
+            header_row.append("ręka pozycja")
+
+
+        if self.settings.uav_number == 2:
+            header_row.append("odległość pomiędzy uav")
+
+
         rows=[]
-        rows.append(["czas","uav1 pozycja","uav1 status","uav2 pozycja","uav2 status", "ręka pozycja","odległość pomiędzy uav"])
+        rows.append(header_row)
         for stac in self.game_states_list:
             uav_distance=get_2d_distance(stac.uav_list[0].position,stac.uav_list[1].position)
             row=[]
             row.append(stac.t_curr)
             row.append("(%.2f,%.2f)"%(stac.uav_list[0].position.x,stac.uav_list[0].position.y))
             row.append("%s"%(stac.uav_list[0].status.to_string()))
-            row.append("(%.2f,%.2f)"%(stac.uav_list[1].position.x,stac.uav_list[1].position.y))
-            row.append("%s" % (stac.uav_list[1].status.to_string()))
-            row.append("(%.2f,%.2f)" % (stac.hands_list[0].position.x, stac.hands_list[0].position.y))
-            row.append("%.2f" % (uav_distance))
+            if self.settings.uav_number == 2:
+                row.append("(%.2f,%.2f)"%(stac.uav_list[1].position.x,stac.uav_list[1].position.y))
+                row.append("%s" % (stac.uav_list[1].status.to_string()))
+            if self.settings.hands_number > 0:
+                row.append("(%.2f,%.2f)" % (stac.hands_list[0].position.x, stac.hands_list[0].position.y))
+            if self.settings.uav_number == 2:
+                row.append("%.2f" % (uav_distance))
             rows.append(row)
 
 
