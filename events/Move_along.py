@@ -139,7 +139,7 @@ def plan_move_along(game_state,settings,rand,event_list:Event_list,uav:Uav):
             is_new_position_correct=False
             while(not(is_new_position_correct)):
                 new_position=get_random_position(rand,game_state,settings)
-                is_new_position_correct=game_state.is_correct(new_position,dt_arrive)
+                is_new_position_correct=game_state.is_correct_drone(new_position,dt_arrive+game_state.t_curr,uav,settings)
         else:#return from tier 2
             is_new_position_correct = False
 

@@ -38,6 +38,8 @@ class Uav(MovableObject):
         self.points=self.points+points
 
     def get_postions_after_update(self, t_curr, settings):
+
+
         delta_time = t_curr - self.next_event.last_postion_update_time
 
         new_postion = self.position

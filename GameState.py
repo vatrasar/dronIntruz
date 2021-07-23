@@ -69,7 +69,18 @@ class GameState():
     def is_correct(self, position, d_ta_arrive):
         return True
     def is_correct_drone(self, position, d_ta_arrive, uav_to_move,settings):
+        """
+
+        :param position:
+        :param d_ta_arrive: point in time when dron come to point. It is t_cur+delta
+        :param uav_to_move:
+        :param settings:
+        :return:
+        """
+
         if len(self.uav_list)==2:
+            if  self.uav_list[0].next_event==None and self.uav_list[1].next_event==None:
+                return True
             secound_uav=None
             for uav in self.uav_list:
                 if uav!=uav_to_move:
