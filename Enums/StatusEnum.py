@@ -12,6 +12,23 @@ class UavStatus(Enum):
     ON_BACK=7
     ON_TEMP_BACK=8
 
+
+    def to_string(self):
+        if self==self.ON_BACK:
+            return "On back"
+        elif self==self.TIER_1:
+            return "TIER_1"
+        elif self == self.TIER_2:
+            return "TIER_2"
+        elif self == self.WAIT:
+            return "WAIT"
+        elif self == self.ON_ATTACK:
+            return "ON_ATTACK"
+        elif self == self.ON_TEMP_BACK:
+            return "On temp back"
+        else:
+            return "Status nieznany"
+
 class HandStatus(Enum):
     TIER_0=1
     DEFENCE=0

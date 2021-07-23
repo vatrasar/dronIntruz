@@ -126,13 +126,15 @@ class Statistics():
 
         #log file
         rows=[]
-        rows.append(["czas","uav1 pozycja","uav2 pozycja", "ręka pozycja","odległość pomiędzy uav"])
+        rows.append(["czas","uav1 pozycja","uav1 status","uav2 pozycja","uav2 status", "ręka pozycja","odległość pomiędzy uav"])
         for stac in self.game_states_list:
             uav_distance=get_2d_distance(stac.uav_list[0].position,stac.uav_list[1].position)
             row=[]
             row.append(stac.t_curr)
             row.append("(%.2f,%.2f)"%(stac.uav_list[0].position.x,stac.uav_list[0].position.y))
+            row.append("%s"%(stac.uav_list[0].status.to_string()))
             row.append("(%.2f,%.2f)"%(stac.uav_list[1].position.x,stac.uav_list[1].position.y))
+            row.append("%s" % (stac.uav_list[1].status.to_string()))
             row.append("(%.2f,%.2f)" % (stac.hands_list[0].position.x, stac.hands_list[0].position.y))
             row.append("%.2f" % (uav_distance))
             rows.append(row)
