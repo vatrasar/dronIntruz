@@ -11,6 +11,7 @@ class UavStatus(Enum):
     ON_ATTACK=6
     ON_BACK=7
     ON_TEMP_BACK=8
+    DEAD=9
 
 
     def to_string(self):
@@ -26,6 +27,8 @@ class UavStatus(Enum):
             return "ON_ATTACK"
         elif self == self.ON_TEMP_BACK:
             return "On temp back"
+        elif self ==self.DEAD:
+            return "DEAD"
         else:
             return "Status nieznany"
 

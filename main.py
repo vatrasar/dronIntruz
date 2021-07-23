@@ -40,6 +40,8 @@ def main():
         plan_visualize(events_list,settings,game_state)
 
     while(True): #main simulation loop
+        if game_state.t_curr>10 and len(game_state.uav_list)>1:
+            game_state.remove_drone(events_list,game_state.uav_list[0])
         closet_event=events_list.get_closest_event()
         if(closet_event==None):
             print("błąd tablica zdarzeń jest pusta")

@@ -16,10 +16,11 @@ from tools.velocity_tools import get_time_to_reach_point_in_streinght_line, get_
 
 
 class Uav(MovableObject):
-    def __init__(self,x,y,status, points,velocity):
+    def __init__(self,x,y,status, points,velocity,index):
         super(Uav, self).__init__(x,y,status,40,velocity)
         self.points=points
         self.last_path=[]
+        self.index=index
 
 
 

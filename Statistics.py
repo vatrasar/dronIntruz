@@ -18,6 +18,7 @@ class Statistics():
         self.game_states_list:typing.List[GameState]=[]
     def update_stac(self,game_state,settings):
         to_svae=game_state.clone_game_state(settings)
+
         self.settings=settings
         self.game_states_list.append(to_svae)
 
@@ -33,7 +34,7 @@ class Statistics():
         x=[]
         y=[]
         for state in self.game_states_list:
-            if len(state.uav_list)==2 and state.uav_list[0].status!=UavStatus.TIER_2 and state.uav_list[1].status!=UavStatus.TIER_2 :
+            if state.uav_list[0].status!=UavStatus.DEAD and state.uav_list[1].status!=UavStatus.DEAD and state.uav_list[0].status!=UavStatus.TIER_2 and state.uav_list[1].status!=UavStatus.TIER_2 :
                 distance=get_2d_distance(state.uav_list[0].position,state.uav_list[1].position)
                 x.append(state.t_curr)
                 y.append(distance)
@@ -56,27 +57,31 @@ class Statistics():
 
                 if len(state.uav_list)>0 and state.uav_list[0].status!=UavStatus.TIER_2:#hand1
                     if len(state.uav_list)>0 and state.uav_list[0].status!=UavStatus.TIER_2:#uav1
-                        distance1=get_2d_distance(state.hands_list[0].position,state.uav_list[0].position)
-                        xr1.append(state.t_curr)
-                        yr1.append(distance1)
+                       if state.uav_list[0].status!=UavStatus.DEAD:
+                            distance1=get_2d_distance(state.hands_list[0].position,state.uav_list[0].position)
+                            xr1.append(state.t_curr)
+                            yr1.append(distance1)
 
                     if len(state.uav_list)>1 and state.uav_list[1].status!=UavStatus.TIER_2:
-                        distance1 = get_2d_distance(state.hands_list[0].position, state.uav_list[1].position)
+                        if state.uav_list[1].status != UavStatus.DEAD:
+                            distance1 = get_2d_distance(state.hands_list[0].position, state.uav_list[1].position)
 
-                        xr2.append(state.t_curr)
-                        yr2.append(distance1)
+                            xr2.append(state.t_curr)
+                            yr2.append(distance1)
 
                 if len(state.uav_list)>0 and len(state.hands_list)>1 and state.uav_list[0].status!=UavStatus.TIER_2:#hand2
-                    if len(state.uav_list) > 0 and state.uav_list[0].status != UavStatus.TIER_2:  # uav1
-                        distance1 = get_2d_distance(state.hands_list[1].position, state.uav_list[0].position)
-                        xl1.append(state.t_curr)
-                        yl1.append(distance1)
+                    if len(state.uav_list) > 0 and state.uav_list[0].status != UavStatus.TIER_2: # uav1
+                        if state.uav_list[0].status!=UavStatus.DEAD:
+                            distance1 = get_2d_distance(state.hands_list[1].position, state.uav_list[0].position)
+                            xl1.append(state.t_curr)
+                            yl1.append(distance1)
 
                     if len(state.uav_list) > 1 and state.uav_list[1].status != UavStatus.TIER_2:
-                        distance1 = get_2d_distance(state.hands_list[1].position, state.uav_list[1].position)
+                        if state.uav_list[1].status != UavStatus.DEAD:
+                            distance1 = get_2d_distance(state.hands_list[1].position, state.uav_list[1].position)
 
-                        xl2.append(state.t_curr)
-                        yl2.append(distance1)
+                            xl2.append(state.t_curr)
+                            yl2.append(distance1)
             #plot
             if len(xl1)>0:
                 plt.plot(xl1, yl1)

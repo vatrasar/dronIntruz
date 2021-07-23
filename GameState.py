@@ -16,9 +16,10 @@ class GameState():
 
         #init UAv
         self.uav_list = []
+        self.list_of_dead_uavs=[]
         self.intruder=Intruder("", 40, settings.intruder_max_energy, settings)
         for i in range(0, settings.uav_number):
-            self.uav_list.append(Uav(0,0,UavStatus.TIER_2,0,settings.v_of_uav))
+            self.uav_list.append(Uav(0,0,UavStatus.TIER_2,0,settings.v_of_uav,i))
 
         #init hands
         self.hands_list = []
@@ -56,13 +57,16 @@ class GameState():
         for uav_to_delete in uav_list_to_delete:
             print("colision!")
 
-            event_list.delete_event(uav_to_delete.next_event)
-            for hand in self.hands_list:
-                if hand.chasing_drone==uav_to_delete:
-                    hand.set_chasing_drone(None)
-            self.uav_list.remove(uav_to_delete)
+            self.remove_drone(event_list, uav_to_delete)
 
-
+    def remove_drone(self, event_list, uav_to_delete):
+        event_list.delete_event(uav_to_delete.next_event)
+        for hand in self.hands_list:
+            if hand.chasing_drone == uav_to_delete:
+                hand.set_chasing_drone(None)
+        self.list_of_dead_uavs.append(uav_to_delete)
+        uav_to_delete.set_status(UavStatus.DEAD)
+        self.uav_list.remove(uav_to_delete)
 
     def update_points_and_energy(self):
         pass
@@ -107,8 +111,16 @@ class GameState():
         #drones
         stat_game_state.uav_list=[]
         for uav in self.uav_list:
-            uav_copy=Uav(uav.position.x,uav.position.y,uav.status,uav.points,uav.velocity)
+
+
+            uav_copy=Uav(uav.position.x,uav.position.y,uav.status,uav.points,uav.velocity,uav.index)
             stat_game_state.uav_list.append(uav_copy)
+        if len(self.list_of_dead_uavs) > 0:
+            for uav in self.list_of_dead_uavs:
+                uav_copy = Uav(uav.position.x, uav.position.y, uav.status, uav.points, uav.velocity, uav.index)
+                stat_game_state.uav_list.append(uav_copy)
+        if stat_game_state.uav_list[0].index>stat_game_state.uav_list[1].index:
+            stat_game_state.uav_list.reverse()
 
 
         stat_game_state.t_curr=self.t_curr
