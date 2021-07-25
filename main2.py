@@ -20,8 +20,7 @@ if __name__ == "__main__":
     #agent = Agent.load(directory='data/checkpoints')
     runner = Runner(
         agent=agent,
-        environment=environment,
-        max_episode_timesteps=100
+        environment=environment
     )
     runner.run(num_episodes=20000,mean_horizon=100)
     # runner.run(num_episodes=100, )

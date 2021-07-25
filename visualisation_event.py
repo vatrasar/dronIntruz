@@ -7,6 +7,7 @@ from Event_list import Event_list
 from GameState import GameState
 
 from GameState import GameState
+from Point import Point
 from Settings import Settings
 
 import matplotlib.pyplot as plt

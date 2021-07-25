@@ -4,27 +4,36 @@ import numpy as np
 from tensorforce import Environment
 
 from Enums import UavStatus
+from Event_list import Event_list
 from GameState import GameState
+from Move_along import plan_move_along
 
 from Settings import Settings
-from events import Event_list
+
 from tools.search_tools import build_discrete_map, build_simple_discrete_map
 
 
 class MyEnvironment(Environment):
-    def __init__(self,my_random:Random,settings:Settings):
+    def __init__(self):
         super().__init__()
+        self.settings = Settings()
 
-        self.settings = settings
+        try:
+            self.settings.get_properties()
+        except Exception as exp:
+            print(str(exp))
+            return
 
-        self.my_random = my_random
-        self.game_map = np.zeros((settings.dimension,settings.dimension),dtype=np.int)
-        self.observation_size = settings.dimension*settings.dimension
+
+        self.my_random = Random()
+        self.game_map = np.zeros((self.settings.dimension,self.settings.dimension),dtype=np.int)
+        self.observation_size = self.settings.dimension*self.settings.dimension
         self.action_size = 2
-        self.max_timestep=1000000
+        self.max_timestep=1000
         self.time_steps=0
         self.is_attack_possible=False
         self.reset_to_start()
+
 
 
     def max_episode_timesteps(self):
@@ -34,10 +43,13 @@ class MyEnvironment(Environment):
         super().close()
 
     def reset(self, num_parallel=None):
+        self.reset_to_start()
+        for uav in self.game_state.uav_list:
+            plan_move_along(self.game_state, self.settings, self.my_random, self.events_list, uav)
         uav=self.perform_untli_decision()
         state=build_simple_discrete_map(self.game_state,self.settings,uav)
 
-        return state
+        return state.map_memmory
     def reset_to_start(self):
         self.events_list = Event_list()
         self.game_state=GameState(self.settings)
@@ -53,6 +65,7 @@ class MyEnvironment(Environment):
         is_decision=False
         game_map_resutl=None
         uav_performing_action=None
+        # planning init event for uav
 
         while not(is_decision):
             closet_event = self.events_list.get_closest_event()
@@ -126,6 +139,6 @@ class MyEnvironment(Environment):
 
 
 
-        return game_map, done, reward
+        return game_map.map_memmory, done, reward
 
 
