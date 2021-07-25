@@ -2,11 +2,12 @@ import typing
 
 import numpy as np
 
-from GameObjects import Uav
+
 from GameState import GameState
 from Map.FluidCel import FluidCell
 from Map.Game_Map import GameMap
 from Settings import Settings
+from UAV import Uav
 from tools.geometric_tools import get_2d_distance
 from tools.velocity_tools import get_time_to_reach_point_in_streinght_line, get_position_on_line_base_on_travel_time
 
@@ -15,7 +16,10 @@ def build_discrete_map(game_state:GameState,settings:Settings,uav):
     game_map=GameMap(settings)
     game_map.update_map(game_state,settings,uav)
     return game_map
-
+def build_simple_discrete_map(game_state, settings, uav):
+    game_map = GameMap(settings)
+    game_map.update_simple_map(game_state, uav)
+    return game_map
 
 def create_path(best_cell:FluidCell):
     path=[best_cell]

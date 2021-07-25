@@ -6,7 +6,7 @@ import sys, os, inspect
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
-from GameObjects.Point import Point
+from Point import Point
 from tools.geometric_tools import get_alpha_for_distance_on_circle, get_vector_angle, get_2d_vector_from_polar, \
     get_2d_distance, get_transform_between_points, get_vector_with_length_and_direction
 

@@ -3,7 +3,7 @@ import shutil
 import typing
 
 from Enums import UavStatus
-from GameObjects import Hand, Uav
+
 from GameState import GameState
 from tools.geometric_tools import get_2d_distance
 from matplotlib import pyplot as plt

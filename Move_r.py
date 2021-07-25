@@ -1,11 +1,15 @@
 import math
 
-from GameObjects import Hand, Uav, Point
+from Event import Event
+from Event_list import Event_list
 from GameState import GameState
+from Hand import Hand
+from Point import Point
 from Settings import Settings
-from events import Event_list, Event
+
 import typing
 from Enums.StatusEnum import UavStatus, HandStatus, Sides
+from UAV import Uav
 from tools.geometric_tools import get_2d_vector_from_polar, get_2d_distance, get_vector_angle, \
     get_postion_when_origin_is_central_point, convert_to_360
 from tools.velocity_tools import get_time_to_reach_point_in_streinght_line

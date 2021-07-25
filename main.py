@@ -1,16 +1,13 @@
 import random
 
-import matplotlib.pyplot as plt
-
-from events.Event_list import Event_list
+from Event_list import Event_list
 from GameState import GameState
 from Settings import Settings
 from Statistics import Statistics
 
-from events.Move_along import plan_move_along
-import time
+from Move_along import plan_move_along
 
-from events.visualisation_event import plan_visualize
+from visualisation_event import plan_visualize
 from tools.other_tools import create_folder
 
 

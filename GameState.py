@@ -1,10 +1,11 @@
+import typing
 
+from Enums.StatusEnum import UavStatus, Sides
+from Hand import Hand
 
-from Enums.StatusEnum import UavStatus, HandStatus, Sides
-from GameObjects.Hand import Hand
-from GameObjects.Intruder import Intruder
-from GameObjects import Uav
-from events import Event
+from Intruder import Intruder
+from UAV import Uav
+
 from tools.geometric_tools import get_2d_distance
 from tools.velocity_tools import get_time_to_reach_point_in_streinght_line, get_position_on_line_base_on_travel_time
 
@@ -15,7 +16,7 @@ class GameState():
         self.visualize_first=True
 
         #init UAv
-        self.uav_list = []
+        self.uav_list:typing.List[Uav] = []
         self.list_of_dead_uavs=[]
         self.intruder=Intruder("", 40, settings.intruder_max_energy, settings)
         for i in range(0, settings.uav_number):

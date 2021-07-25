@@ -1,4 +1,4 @@
-from GameObjects import Point
+from Point import Point
 
 
 class FluidCell():

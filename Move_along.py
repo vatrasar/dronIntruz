@@ -1,11 +1,14 @@
 import sys, os, inspect
 import typing
 
+from Event import Event
 from GameState import GameState
 from Map.FluidCel import FluidCell
 from Map.Game_Map import GameMap
 
-from events.Move_r import plan_move_r
+from Move_r import plan_move_r
+from Point import Point
+from UAV import Uav
 from tools.geometric_tools import get_2d_distance, get_random_position, get_vector_angle, get_2d_vector_from_polar
 from tools.search_tools import select_temp_path_back, search_p_a_back, search_p_a_attack, build_discrete_map
 from tools.velocity_tools import get_position_on_circle_base_on_travel_time, get_time_to_reach_point_in_streinght_line, \
@@ -20,9 +23,8 @@ import random
 
 
 
-from GameObjects import Uav, Point
-from events import Event
-from events.Event_list import Event_list
+
+from Event_list import Event_list
 
 from Settings import Settings
 

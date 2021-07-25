@@ -3,10 +3,13 @@ import typing
 
 import numpy as np
 
-from GameObjects import Point, Uav, MovableObject
+
 from GameState import GameState
 from Map.FluidCel import FluidCell
+from MovableObject import MovableObject
+from Point import Point
 from Settings import Settings
+from UAV import Uav
 from tools.geometric_tools import get_2d_distance, get_vector_angle, convert_to_360, get_transform_between_points, \
     move_point_with_vector, angle_positive, is_angle_in_range
 
@@ -45,8 +48,8 @@ def check_is_in_dron_search_range_back(cell_postion, drone_position, intruder_po
 
 class GameMap():
     def __init__(self,settings):
-        map_size=settings.tier1_distance_from_intruder*1.3
-        self.dimension = int((map_size - (-map_size)) / settings.map_resolution)
+        map_size=settings.map_size
+        self.dimension = settings.dimension
         self.x_min=-map_size
         self.x_max=map_size
         self.y_min=-map_size
@@ -280,6 +283,29 @@ class GameMap():
             return 1
         else:
             return 0
+
+    def update_simple_map(self, game_state, uav_in_decision):
+        self.map_memmory = np.zeros((self.dimension, self.dimension), np.int32)
+
+
+
+
+        # seting object on map, code works but i turned it of becase of performacnes
+
+        for uav in game_state.uav_list:#set uav positions on map
+            x_i, y_i = self.get_point_on_map_index(uav.position.x, uav.position.y)
+            if uav==uav_in_decision:
+                self.map_memmory[y_i][x_i]=1
+            else:
+                self.map_memmory[y_i][x_i] = 2
+
+        for hand in game_state.hands_list:  # set uav positions on map
+            x_i, y_i = self.get_point_on_map_index(hand.position.x, hand.position.y)
+            self.map_memmory[y_i][x_i] = 3
+
+
+
+
 
 
 

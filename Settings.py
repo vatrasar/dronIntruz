@@ -74,6 +74,8 @@ class Settings():
         self.folder_to_save_visualization = "./visualsation"
         self.vis_counter=0
         self.minimal_points=0
+        self.map_size = self.tier1_distance_from_intruder * 1.3
+        self.dimension = int((self.map_size - (-self.map_size)) / self.map_resolution)
 
         return setting_dict
 
@@ -112,7 +114,7 @@ class Settings():
 
         elif (property_name=="prob_of_attack"):
 
-            self.prob_of_attack=self.check_float(property_value,property_name,0,1,False)
+            self.prob_of_attack=self.check_float(property_value,property_name,0,1.1,False)
         elif (property_name=="prob_of_return_to_T2"):
 
             self.prob_of_return_to_T2=self.check_float(property_value,property_name,0,1,False)

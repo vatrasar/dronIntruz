@@ -1,13 +1,13 @@
 import sys, os, inspect
 
 from Enums import UavStatus
-from events import Event
+
 from tools.velocity_tools import get_position_on_circle_base_on_travel_time, get_move_point
 
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
-from GameObjects.Point import Point
+from Point import Point
 from tools.geometric_tools import get_2d_distance, get_transform_between_points, get_vector_with_length_and_direction
 
 

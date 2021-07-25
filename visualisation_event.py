@@ -2,13 +2,13 @@ import math
 from random import Random
 
 from Enums import UavStatus, HandStatus
+from Event import Event
+from Event_list import Event_list
 from GameState import GameState
-from events import Event, Event_list
 
-from GameObjects import Point
 from GameState import GameState
 from Settings import Settings
-from events import Event_list
+
 import matplotlib.pyplot as plt
 import numpy as np
 import time

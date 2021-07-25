@@ -9,7 +9,7 @@ from random import Random
 
 import numpy as np
 
-from GameObjects.Point import Point
+from Point import Point
 
 
 def get_2d_vector_from_polar(angle,distance):

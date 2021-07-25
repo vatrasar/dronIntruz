@@ -1,14 +1,12 @@
 import sys, os, inspect
 
-from GameObjects import MovableObject
 
-currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-parentdir = os.path.dirname(currentdir)
-sys.path.insert(0, parentdir)
+from MovableObject import MovableObject
+
 
 from random import Random
 
-from events.Event_list import Event_list
+
 from GameState import GameState
 
 
@@ -20,7 +18,7 @@ class Event():
         self.next_status=next_status
         self.last_postion_update_time=last_postion_update_time
 
-    def handle_event(self,event_list:Event_list,game_state:GameState,settings,rand:Random):
+    def handle_event(self,event_list,game_state:GameState,settings,rand:Random):
         event_list.delete_event(self)
         self.event_owner.next_event=None
         self.event_owner.set_status(self.next_status)

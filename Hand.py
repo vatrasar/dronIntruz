@@ -1,10 +1,9 @@
 from Enums.StatusEnum import Sides
-from GameObjects import Point
-from GameObjects.MovableObject import MovableObject
+from MovableObject import MovableObject
 from Settings import Settings
 from tools.geometric_tools import get_2d_vector_from_polar, get_2d_distance, get_transform_between_points, \
     get_vector_with_length_and_direction
-from GameObjects.Point import Point
+from Point import Point
 from tools.velocity_tools import get_move_point
 
 
