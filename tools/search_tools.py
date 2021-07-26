@@ -1,15 +1,46 @@
 import typing
 
-import numpy as np
-
-
 from GameState import GameState
+from Game_Map import GameMap
 from Map.FluidCel import FluidCell
-from Map.Game_Map import GameMap
+
+
 from Settings import Settings
 from UAV import Uav
 from tools.geometric_tools import get_2d_distance
-from tools.velocity_tools import get_time_to_reach_point_in_streinght_line, get_position_on_line_base_on_travel_time
+
+
+def get_best_points_in_range(game_map, settings, game_state, uav):
+    best_cell_in_range = game_map.fluid_map[0][0]
+
+    for row in game_map.fluid_map:
+        for cell in row:
+            if best_cell_in_range.points < cell.points and cell.is_visited == True:
+                best_cell_in_range = cell
+
+    if best_cell_in_range.points == settings.minimal_points or not (is_back_from_postion(best_cell_in_range, uav, game_state, settings)):
+        return None
+    # if best_cell_in_range.points == settings.minimal_points:
+    #     return None
+
+    return best_cell_in_range
+
+def is_back_from_postion(best_cell_in_range,uav,game_state:GameState,settings:Settings):
+    # if (is_last_path_ok(uav.last_path, game_state, settings)):
+    #     return uav.last_path
+    game_map: GameMap = build_discrete_map(game_state, settings, uav)
+    floading_algo_back(game_map, game_state, settings,best_cell_in_range.position,1,best_cell_in_range.uav_arrive_time)
+    if (game_map.has_points_on_path()):
+        best_cell = game_map.get_best_points_in_range_back(game_state,settings,uav)
+        if best_cell==None:
+            return False
+
+        path = create_path(best_cell)
+        game_map.show_path(path)
+        return True
+    else:  # no path to target
+        return False
+    # get best
 
 
 def build_discrete_map(game_state:GameState,settings:Settings,uav):
@@ -56,8 +87,8 @@ def search_p_a_attack(game_state:GameState,settings,uav:Uav):
     game_map:GameMap=build_discrete_map(game_state, settings,uav)
     floading_algo_attack(game_map, game_state, settings, uav)
     if(game_map.has_points_on_path()):
-        best_cell=game_map.get_best_points_in_range(settings)
-        if best_cell.points==None:
+        best_cell=get_best_points_in_range(game_map,settings,game_state,uav)
+        if best_cell==None:
             return []
         path=create_path(best_cell)
         game_map.show_path(path)
@@ -67,10 +98,10 @@ def search_p_a_attack(game_state:GameState,settings,uav:Uav):
     #get best
 
 
-def floading_algo_back(game_map:GameMap, game_state, settings, uav,temp_ratio):
+def floading_algo_back(game_map:GameMap, game_state, settings, init_drone_postion,temp_ratio,init_time):
     floadin_queue = []
-    old_cell = game_map.get_floading_point(uav.position)
-    old_cell.uav_arrive_time = 0
+    old_cell = game_map.get_floading_point(init_drone_postion)
+    old_cell.uav_arrive_time = init_time
     floadin_queue.append(old_cell)
 
     first_cell = old_cell
@@ -81,7 +112,7 @@ def floading_algo_back(game_map:GameMap, game_state, settings, uav,temp_ratio):
         floadin_queue.remove(old_cell)
         old_cell.is_queue=False
 
-        neighbours_list: typing.List[FluidCell] = game_map.get_back_avaiable_neighbours(old_cell,uav,game_state,settings,first_cell,temp_ratio)
+        neighbours_list: typing.List[FluidCell] = game_map.get_back_avaiable_neighbours(old_cell,init_drone_postion,game_state,settings,first_cell,temp_ratio)
 
         parents_list=[]
         # check naighbours. set parent and arrive time
@@ -171,7 +202,7 @@ def search_p_a_back(game_state:GameState,settings,uav:Uav) -> list:
     if (is_last_path_ok(uav.last_path, game_state, settings)):
         return uav.last_path
     game_map: GameMap = build_discrete_map(game_state, settings, uav)
-    floading_algo_back(game_map, game_state, settings, uav,1)
+    floading_algo_back(game_map, game_state, settings, uav.position,1,0)
     if (game_map.has_points_on_path()):
         best_cell = game_map.get_best_points_in_range_back(game_state,settings,uav)
         if best_cell==None:
@@ -189,7 +220,7 @@ def select_temp_path_back(game_state:GameState,settings,uav:Uav) -> list:
     if (is_last_path_ok(uav.last_path, game_state, settings)):
         return uav.last_path
     game_map: GameMap = build_discrete_map(game_state, settings, uav)
-    floading_algo_back(game_map, game_state, settings, uav,0.6)
+    floading_algo_back(game_map, game_state, settings, uav.position,0.6,0)
     if (game_map.has_points_on_path()):
         best_cell = game_map.get_best_points_in_range_back(game_state, settings, uav)
         if best_cell == None:

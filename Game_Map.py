@@ -14,6 +14,9 @@ from tools.geometric_tools import get_2d_distance, get_vector_angle, convert_to_
     move_point_with_vector, angle_positive, is_angle_in_range
 
 
+
+
+
 def check_is_in_dron_search_range(cell_postion, drone_position, intruder_position,search_angle):
     transform_vecrot_to_intruder=get_transform_between_points(drone_position,intruder_position)
     temp_point=move_point_with_vector(cell_postion,transform_vecrot_to_intruder)
@@ -45,6 +48,9 @@ def check_is_in_dron_search_range_back(cell_postion, drone_position, intruder_po
 
     # print(("current %.2f radians %.2f point %.2f %.2f")%(point_angle,orginal_angle,temp_point.x,temp_point.y))
     return is_angle_in_range(point_angle,anlge_min,anlge_max)
+
+
+
 
 class GameMap():
     def __init__(self,settings):
@@ -110,19 +116,19 @@ class GameMap():
 
                 point = self.convert_index_to_point(p, i)
                 point = Point(point[0], point[1])
-                new_cell = FluidCell(-1, point, p, i,settings)
+                new_cell = FluidCell(settings.minimal_points, point, p, i,settings)
                 self.fluid_map[i].append(new_cell)
 
 
         #seting object on map, code works but i turned it of becase of performacnes
-        for uav in game_state.uav_list:#set uav positions on map
-            self.set_object_on_map(uav,settings.uav_size,100)
-
-        for hand in game_state.hands_list:  # set uav positions on map
-            self.set_object_on_map(hand,settings.hand_size,200)
-
-
-        self.set_object_on_map(game_state.intruder,settings.intuder_size,300)
+        # for uav in game_state.uav_list:#set uav positions on map
+        #     self.set_object_on_map(uav,settings.uav_size,100)
+        #
+        # for hand in game_state.hands_list:  # set uav positions on map
+        #     self.set_object_on_map(hand,settings.hand_size,200)
+        #
+        #
+        # self.set_object_on_map(game_state.intruder,settings.intuder_size,300)
 
 
 
@@ -218,17 +224,7 @@ class GameMap():
 
         return False
 
-    def get_best_points_in_range(self,settings):
-        best_cell_in_range=self.fluid_map[0][0]
 
-        for row in self.fluid_map:
-            for cell in row:
-                if best_cell_in_range.points<cell.points and cell.is_visited==True:
-                    best_cell_in_range=cell
-
-        if best_cell_in_range.points==settings.minimal_points:
-            return None
-        return best_cell_in_range
 
     def get_best_points_in_range_back(self,game_state:GameState,settings:Settings,uav):
         best_cell_in_range=self.fluid_map[0][0]
@@ -251,7 +247,7 @@ class GameMap():
             self.fluid_memory[element.index.y][element.index.x]=i
             i=i+1
 
-    def get_back_avaiable_neighbours(self, parrent_cell:FluidCell,uav,game_state:GameState,settings:Settings,first_cell,temp_ratio):
+    def get_back_avaiable_neighbours(self, parrent_cell:FluidCell,init_drone_postion,game_state:GameState,settings:Settings,first_cell,temp_ratio):
 
         x=parrent_cell.index.x
         y=parrent_cell.index.y
@@ -267,7 +263,7 @@ class GameMap():
                 if cell.is_visited:
                     neighbours_cells_list.append(cell)
                 #is in search range
-                elif (check_is_in_dron_search_range_back(cell.position,uav.position,game_state.intruder.position,20) or get_2d_distance(cell.position,uav.position)<settings.tier1_distance_from_intruder*0.2):
+                elif (check_is_in_dron_search_range_back(cell.position,init_drone_postion,game_state.intruder.position,20) or get_2d_distance(cell.position,init_drone_postion)<settings.tier1_distance_from_intruder*0.2):
 
                     #assing points
                     points=self.get_cell_points_back(cell, game_state, settings,temp_ratio)

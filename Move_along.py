@@ -4,7 +4,7 @@ import typing
 from Event import Event
 from GameState import GameState
 from Map.FluidCel import FluidCell
-from Map.Game_Map import GameMap
+from Game_Map import GameMap
 
 from Move_r import plan_move_r
 from Point import Point
