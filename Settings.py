@@ -76,6 +76,9 @@ class Settings():
         self.minimal_points=0
         self.map_size = self.tier1_distance_from_intruder * 1.3
         self.dimension = int((self.map_size - (-self.map_size)) / self.map_resolution)
+        self.simple_resolution=4
+        self.simple_map_size = self.tier1_distance_from_intruder * 1.3
+        self.simple_dimension = int((self.map_size - (-self.map_size)) / self.simple_resolution)
 
         return setting_dict
 

@@ -26,8 +26,8 @@ class MyEnvironment(Environment):
 
 
         self.my_random = Random()
-        self.game_map = np.zeros((self.settings.dimension,self.settings.dimension),dtype=np.int)
-        self.observation_size = self.settings.dimension*self.settings.dimension
+        self.game_map = np.zeros((self.settings.simple_dimension,self.settings.simple_dimension),dtype=np.int)
+        self.observation_size = self.settings.simple_dimension*self.settings.simple_dimension
         self.action_size = 2
         self.max_timestep=1000
         self.time_steps=0
@@ -55,7 +55,7 @@ class MyEnvironment(Environment):
         self.game_state=GameState(self.settings)
 
     def states(self):
-        return dict(type='int', shape=(self.settings.dimension,self.settings.dimension),num_values=4)
+        return dict(type='int', shape=(self.settings.simple_dimension,self.settings.simple_dimension),num_values=4)
 
     def actions(self):
         return dict(type='int', num_values=2)

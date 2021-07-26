@@ -59,12 +59,17 @@ class GameMap():
         self.x_min=-map_size
         self.x_max=map_size
         self.y_min=-map_size
-        self.y_max=-map_size
+        self.y_max=map_size
         self.map_memmory = np.zeros((self.dimension, self.dimension), np.int32)
         self.fluid_map:typing.List[typing.List[FluidCell]]=[]
         self.fluid_memory = np.zeros((self.dimension, self.dimension), np.int32)
         self.map_resolution=settings.map_resolution
         self.poin_ranges=[(0, 100, 3), (100, 200, 5), (200, 361, 3)]
+        self.settings=settings
+        self.simple_x_min = -self.settings.simple_map_size
+        self.simple_x_max = self.settings.simple_map_size
+        self.simple_y_min = -self.settings.simple_map_size
+        self.simple_y_max = self.settings.simple_map_size
 
 
 
@@ -281,7 +286,7 @@ class GameMap():
             return 0
 
     def update_simple_map(self, game_state, uav_in_decision):
-        self.map_memmory = np.zeros((self.dimension, self.dimension), np.int32)
+        self.map_memmory = np.zeros((self.settings.simple_dimension, self.settings.simple_dimension), np.int32)
 
 
 
@@ -289,15 +294,20 @@ class GameMap():
         # seting object on map, code works but i turned it of becase of performacnes
 
         for uav in game_state.uav_list:#set uav positions on map
-            x_i, y_i = self.get_point_on_map_index(uav.position.x, uav.position.y)
+            x_i, y_i = self.get_point_on_simple_map_index(uav.position.x, uav.position.y)
             if uav==uav_in_decision:
                 self.map_memmory[y_i][x_i]=1
             else:
                 self.map_memmory[y_i][x_i] = 2
 
         for hand in game_state.hands_list:  # set uav positions on map
-            x_i, y_i = self.get_point_on_map_index(hand.position.x, hand.position.y)
+            x_i, y_i = self.get_point_on_simple_map_index(hand.position.x, hand.position.y)
             self.map_memmory[y_i][x_i] = 3
+
+    def get_point_on_simple_map_index(self, x, y):
+        x_i = int(round((x - self.simple_y_min) / self.settings.simple_resolution))
+        y_i = int(round((y - self.simple_y_min) / self.settings.simple_resolution))
+        return (x_i, y_i)
 
 
 
