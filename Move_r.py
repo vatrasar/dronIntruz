@@ -11,7 +11,8 @@ import typing
 from Enums.StatusEnum import UavStatus, HandStatus, Sides
 from UAV import Uav
 from tools.geometric_tools import get_2d_vector_from_polar, get_2d_distance, get_vector_angle, \
-    get_postion_when_origin_is_central_point, convert_to_360
+    get_postion_when_origin_is_central_point, convert_to_360, get_vector_with_length_and_direction, \
+    get_transform_between_points, move_point_with_vector
 from tools.velocity_tools import get_time_to_reach_point_in_streinght_line
 import random
 
@@ -73,7 +74,12 @@ def get_distance_from_hand_to_intruder(closest_drone, distance_to_tier0, tier0_p
     if (angle > 3.14):
         angle = 2 * 3.14 - angle
 
-
+    if angle==0:
+        transfer=get_transform_between_points(tier0_pose,closest_drone.position)
+        result_vector=get_vector_with_length_and_direction(distance_to_tier0,transfer)
+        new_hand_position=move_point_with_vector(tier0_pose,result_vector)
+        distance=get_2d_distance(new_hand_position,game_state.intruder.position)
+        return distance
     distanec_tier0_intruder=get_2d_distance(game_state.intruder.position,tier0_pose)
     sinB=(distanec_tier0_intruder/distance_to_tier0)*math.sin(angle)
     Bdegrees=None

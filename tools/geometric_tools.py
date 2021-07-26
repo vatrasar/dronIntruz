@@ -107,6 +107,10 @@ def move_point_with_vector(point, vector):
 	new_point=Point(point.x+vector[0],point.y+vector[1])
 
 	return new_point
+
+
+
+#x on first place y on secound place
 def get_vector_with_length_and_direction(drone_move_max_speed,direction_vector):
 	sum_of_squares=direction_vector[0]**2+direction_vector[1]**2
 	scale_factor=drone_move_max_speed/math.sqrt(sum_of_squares)
