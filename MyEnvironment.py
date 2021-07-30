@@ -24,15 +24,18 @@ class MyEnvironment(Environment):
             print(str(exp))
             return
 
-
+        self.counter=0
         self.my_random = Random()
         self.game_map = np.zeros((self.settings.simple_dimension,self.settings.simple_dimension),dtype=np.int)
-        self.observation_size = self.settings.simple_dimension*self.settings.simple_dimension
+        self.observation_size = self.settings.simple_dimension*self.settings.simple_dimension*4
         self.action_size = 2
-        self.max_timestep=1000
-        self.time_steps=0
+        self.max_timestep=100
+        self.time_steps=70
         self.is_attack_possible=False
-        self.reset_to_start()
+        self.real_points=0
+
+
+        # self.reset_to_start()
 
 
 
@@ -53,6 +56,11 @@ class MyEnvironment(Environment):
     def reset_to_start(self):
         self.events_list = Event_list()
         self.game_state=GameState(self.settings)
+        self.real_points = 0
+        self.attack_in_current = 0
+        self.hits=0
+
+
 
     def states(self):
         return dict(type='int', shape=(self.settings.simple_dimension,self.settings.simple_dimension),num_values=4)
@@ -71,11 +79,11 @@ class MyEnvironment(Environment):
             closet_event = self.events_list.get_closest_event()
             if (closet_event == None):
                 print("błąd tablica zdarzeń jest pusta")
-                break
+                return None
 
             self.game_state.update_time(new_time=closet_event.time_of_event)
 
-            print("time :" + str(self.game_state.t_curr))
+            #print("time :" + str(self.game_state.t_curr))
             if (self.game_state.t_curr > self.settings.T):  # end of loop
                 return None
 
@@ -112,26 +120,39 @@ class MyEnvironment(Environment):
 
     def execute(self, actions):
 
-
-
-
+        self.time_steps=self.time_steps+1
         reward=0
         done=False
 
+
         # reward for previous state:
+
         if self.is_attack_possible:
-            if actions==0:
-                reward=10
-            else:
-                reward=-30
-        else:
+            self.attack_in_current=self.attack_in_current+1
             if actions==1:
+                reward=10
+                self.real_points=self.real_points+1
+                self.hits=self.hits+1
+            else:
+                reward=-1
+
+
+        else:
+            if actions==0:
+                self.hits = self.hits + 1
                 reward=1
             else:
                 reward=-1
+
+
         uav=self.perform_untli_decision()
         if uav==None:
             done=True
+            if self.attack_in_current!=0:
+                print("atttakc %.2f"%(self.real_points/self.attack_in_current))
+                print("all %.2f"%(self.hits/self.time_steps))
+
+
         game_map=build_simple_discrete_map(self.game_state,self.settings,uav)
 
 
