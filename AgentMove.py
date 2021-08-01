@@ -6,8 +6,9 @@ from Event_list import Event_list
 from Move_r import plan_move_r
 from Point import Point
 from Settings import Settings
-from tools.geometric_tools import get_2d_distance
-from tools.velocity_tools import get_time_to_reach_point_in_streinght_line
+from UAV import Uav
+from tools.geometric_tools import get_2d_distance, get_random_position
+from tools.velocity_tools import get_time_to_reach_point_in_streinght_line, get_d_t_arrive_poison
 
 
 class AgentMove(Event):
@@ -16,7 +17,7 @@ class AgentMove(Event):
         super().handle_event(event_list, game_state, settings, rand)
         self.event_owner.position=self.target_position
         if self.event_owner.action==-1: #environment have3 to wait for decision
-            super().handle_event(event_list, game_state, settings, rand)
+
             #planning waitning event
 
             event_time = game_state.t_curr
@@ -63,3 +64,15 @@ class AgentMove(Event):
             event_list.append_event(new_event, self.event_owner, self.event_owner.status)
 
 
+def plan_agent_init(game_state,settings,rand,event_list:Event_list,uav:Uav):
+    dt_arrive = get_d_t_arrive_poison(settings)
+    is_new_position_correct = False
+    new_position=None
+    while (not (is_new_position_correct)):
+        new_position = get_random_position(rand, game_state, settings)
+        is_new_position_correct = game_state.is_correct_drone(new_position, dt_arrive + game_state.t_curr, uav,
+                                                              settings)
+
+    event_time = game_state.t_curr + dt_arrive
+    new_event = AgentMove(event_time, new_position, uav, UavStatus.TIER_1, game_state.t_curr)
+    event_list.append_event(new_event, uav, UavStatus.TIER_2)

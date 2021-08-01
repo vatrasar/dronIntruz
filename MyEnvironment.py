@@ -3,12 +3,14 @@ from random import random, Random
 import numpy as np
 from tensorforce import Environment
 
+from AgentMove import plan_agent_init
 from Enums import UavStatus
 from Event_list import Event_list
 from GameState import GameState
 from Move_along import plan_move_along
 
 from Settings import Settings
+from UAV import Uav
 
 from tools.search_tools import build_discrete_map, build_simple_discrete_map
 
@@ -33,6 +35,7 @@ class MyEnvironment(Environment):
         self.time_steps=70
         self.is_attack_possible=False
         self.real_points=0
+        self.last_rewad=0
 
 
         # self.reset_to_start()
@@ -59,6 +62,7 @@ class MyEnvironment(Environment):
         self.real_points = 0
         self.attack_in_current = 0
         self.hits=0
+
 
 
 
@@ -162,4 +166,152 @@ class MyEnvironment(Environment):
 
         return game_map.map_memmory, done, reward
 
+
+
+
+
+class MyEnvironmentViciousDrone(Environment):
+    def __init__(self):
+        super().__init__()
+        self.settings = Settings()
+
+        try:
+            self.settings.get_properties()
+        except Exception as exp:
+            print(str(exp))
+            return
+
+        self.counter=0
+        self.my_random = Random()
+        self.game_map = np.zeros((self.settings.simple_dimension,self.settings.simple_dimension),dtype=np.int)
+        self.observation_size = self.settings.simple_dimension*self.settings.simple_dimension*4
+        self.action_size = 2
+        self.max_timestep=100
+        self.time_steps=70
+        self.is_attack_possible=False
+        self.real_points=0
+        self.agent_uav:Uav=None
+        self.attack_uav:Uav = None
+
+
+        # self.reset_to_start()
+
+
+
+    def max_episode_timesteps(self):
+        return self.max_timestep
+
+    def close(self):
+        super().close()
+
+    def reset(self, num_parallel=None):
+        self.reset_to_start()
+
+        plan_move_along(self.game_state, self.settings, self.my_random, self.events_list, self.game_state.uav_list[0])
+        plan_agent_init(self.game_state, self.settings, self.my_random, self.events_list, self.game_state.uav_list[1])
+        self.agent_uav=self.game_state.uav_list[1]
+        self.attack_uav=self.game_state.uav_list[0]
+        state=self.perform_untli_decision()
+        state = build_simple_discrete_map(self.game_state, self.settings, self.agent_uav)
+
+
+
+        return state.map_memmory
+    def reset_to_start(self):
+        self.events_list = Event_list()
+        self.game_state=GameState(self.settings)
+        self.real_points = 0
+        self.attack_in_current = 0
+        self.last_rewad = 0
+        self.hits=0
+
+
+
+
+    def states(self):
+        return dict(type='int', shape=(self.settings.simple_dimension,self.settings.simple_dimension),num_values=4)
+
+    def actions(self):
+        return dict(type='int', num_values=4)
+
+
+    def perform_untli_decision(self):
+        is_decision=False
+        decision=None
+        uav_performing_action=None
+        # planning init event for uav
+
+        while not(is_decision):
+            closet_event = self.events_list.get_closest_event()
+            if (closet_event == None):
+                print("błąd tablica zdarzeń jest pusta")
+                return True
+            if len(self.game_state.uav_list)<2:
+                return True
+            self.game_state.update_time(new_time=closet_event.time_of_event)
+
+            #print("time :" + str(self.game_state.t_curr))
+            if (self.game_state.t_curr > self.settings.T):  # end of loop
+                return True
+
+            self.game_state.update_elements_positions(self.settings)
+            self.game_state.check_collisions(self.settings, self.events_list)
+
+
+            if closet_event.event_owner==self.agent_uav and closet_event.event_owner.action==-1:
+
+                    is_decision=True
+
+
+            if (closet_event in self.events_list.event_list):
+                closet_event.handle_event(self.events_list, self.game_state, self.settings, self.my_random)
+
+
+            self.game_state.check_collisions(self.settings, self.events_list)
+            self.game_state.update_points_and_energy()
+            if is_decision:
+                break
+
+
+
+            # if (self.game_state.intruder.health <= 0):
+            #     statistics.update_stac(game_state, settings)
+            #     statistics.save()
+            #     break
+        return False
+
+    def execute(self, actions):
+
+
+        self.agent_uav.action=actions
+        self.time_steps=self.time_steps+1
+        reward=0
+        done=False
+        state=None
+
+
+        # reward for previous state:
+
+
+        is_end_of_game=self.perform_untli_decision()
+        reward = self.attack_uav.points - self.last_rewad
+        self.last_rewad=self.attack_uav.points
+        if is_end_of_game:
+
+            done=True
+        else:
+
+            done=False
+
+
+        state = build_simple_discrete_map(self.game_state, self.settings, self.agent_uav)
+
+
+
+
+
+
+
+
+        return state.map_memmory, done, reward
 

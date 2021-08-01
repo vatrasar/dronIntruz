@@ -20,6 +20,7 @@ class Uav(MovableObject):
         self.points=points
         self.last_path=[]
         self.index=index
+        self.action = -1
 
 
 

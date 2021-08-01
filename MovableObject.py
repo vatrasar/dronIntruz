@@ -1,7 +1,7 @@
 import sys, os, inspect
 
 from Enums import UavStatus
-from Event import Event
+
 
 from tools.velocity_tools import get_position_on_circle_base_on_travel_time, get_move_point
 
@@ -18,11 +18,11 @@ from tools.geometric_tools import get_2d_distance, get_transform_between_points,
 class MovableObject():
     def __init__(self,x,y,status,object_size,velocity):
         self.position=Point(x,y)
-        self.next_event:Event=None
+        self.next_event=None
         self.status=status
         self.object_size=object_size
         self.velocity=float(velocity)
-        self.action=-1
+
 
 
     def set_new_position(self, new_position):

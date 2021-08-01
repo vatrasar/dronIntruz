@@ -18,6 +18,6 @@ hand_size=1 #Rozmiar ręki. wartość powyżej 0
 velocity_hand=7 #Prędkość ręki. wartość powyżej 0
 visualzation_update_interval=0.5 #co ile jednostek czasu ma być aktualizowana wizualizacja symulacji. Wartość powyżej 0
 r_of_LR=15 #Maksymalny zasięg ręki. wartość powyżej 0. r_of_LR musi być większe niż suma intuder_size i uav_size
-map_resolution=3 #Rozdzielczość mapy tworzonej na potrzeby algorytmu poszukującego ścieżki. wartość powyżej 0
+map_resolution=2 #Rozdzielczość mapy tworzonej na potrzeby algorytmu poszukującego ścieżki. wartość powyżej 0
 search_angle=30 #kąt, który określa wielkość stożka poszukiwań. wartość miedzy 20 a 360
 seed=800 #ziarno generatora liczb losowych

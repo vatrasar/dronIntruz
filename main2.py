@@ -7,14 +7,13 @@ from collections import deque
 from tensorforce import Environment, Agent, Runner
 
 
-from MyEnvironment import MyEnvironment
-from test2 import MyGameEnv2D
+from MyEnvironment import MyEnvironment, MyEnvironmentViciousDrone
 
 if __name__ == "__main__":
 
 
     environment = Environment.create(
-        environment=MyEnvironment
+        environment=MyEnvironmentViciousDrone
     )
     agent = Agent.create(
         agent='ppo', environment=environment, batch_size=64, learning_rate=0.000250, likelihood_ratio_clipping=0.1,
