@@ -1,4 +1,5 @@
 import csv
+import math
 import shutil
 import typing
 
@@ -168,6 +169,26 @@ class Statistics():
 
         f.close()
 
+
+
+class RLStac():
+    def __init__(self):
+        self.points_list=[]
+        self.grand_point=[]
+        self.save_directory = create_folder("./charts")
+
+    def add_reward_to_list(self,reward):
+        self.points_list.append(reward)
+
+        if len(self.points_list) > 100:
+            mena_reward = sum(self.points_list) / len(self.points_list)
+            self.grand_point.append(mena_reward)
+
+            plt.plot(self.grand_point)
+            plt.savefig(self.save_directory + "/" + "mean_reward.svg")
+            plt.clf()
+            plt.close()
+            self.points_list = []
 
 
 

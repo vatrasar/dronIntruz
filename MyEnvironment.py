@@ -10,6 +10,7 @@ from GameState import GameState
 from Move_along import plan_move_along
 
 from Settings import Settings
+from Statistics import RLStac
 from UAV import Uav
 
 from tools.search_tools import build_discrete_map, build_simple_discrete_map
@@ -192,6 +193,7 @@ class MyEnvironmentViciousDrone(Environment):
         self.real_points=0
         self.agent_uav:Uav=None
         self.attack_uav:Uav = None
+        self.lr_stac=RLStac()
 
 
         # self.reset_to_start()
@@ -295,9 +297,10 @@ class MyEnvironmentViciousDrone(Environment):
 
         is_end_of_game=self.perform_untli_decision()
         reward = self.attack_uav.points - self.last_rewad
+
         self.last_rewad=self.attack_uav.points
         if is_end_of_game:
-
+            self.lr_stac.add_reward_to_list(self.attack_uav.points)
             done=True
         else:
 
